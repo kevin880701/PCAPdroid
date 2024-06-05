@@ -694,7 +694,7 @@ public class Utils {
 
     public static String getUniqueFileName(Context context, String ext) {
         Locale locale = getPrimaryLocale(context);
-        final DateFormat fmt = new SimpleDateFormat("dd_MMM_HH_mm_ss", locale);
+        final DateFormat fmt = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", locale);
         return  "PCAPdroid_" + fmt.format(new Date()) + "." + ext;
     }
 
@@ -833,10 +833,13 @@ public class Utils {
         values.put(MediaStore.MediaColumns.DISPLAY_NAME, fname);
         String selectQuery = "";
 
+        Locale locale = getPrimaryLocale(context);
+        final DateFormat fmt = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", locale);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // On Android Q+ cannot directly access the external dir. Must use RELATIVE_PATH instead.
             // Important: trailing "/" required for the selectQuery
-            String relPath = Environment.DIRECTORY_DOWNLOADS + "/PCAPdroid/";
+            String relPath = Environment.DIRECTORY_DOWNLOADS + "/PCAPdroid/" + fmt.format(new Date()) + "/";
             selectQuery = MediaStore.MediaColumns.RELATIVE_PATH + "='" + relPath + "' AND " +
                 MediaStore.MediaColumns.DISPLAY_NAME + "='" + fname + "'";
             values.put(MediaStore.MediaColumns.RELATIVE_PATH, relPath);

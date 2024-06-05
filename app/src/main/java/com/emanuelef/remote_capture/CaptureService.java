@@ -344,7 +344,6 @@ public class CaptureService extends VpnService implements Runnable {
 
             if(mPcapUri == null)
                 return abortStart();
-
             mDumper = new FileDumper(this, mPcapUri);
         }
 
