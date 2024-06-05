@@ -81,14 +81,6 @@
             app:layout_constraintTop_toBottomOf="@id/status_view"
             app:layout_constraintStart_toStartOf="parent">
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/dump_mode_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dialog"
-                tools:listitem="@layout/quick_settings_item"
-                android:prompt="@string/traffic_dump"/>
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">

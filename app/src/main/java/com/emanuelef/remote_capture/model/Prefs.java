@@ -136,12 +136,7 @@ public class Prefs {
     }
 
     public static DumpMode getDumpMode(String pref) {
-        switch (pref) {
-            case DUMP_HTTP_SERVER:      return DumpMode.HTTP_SERVER;
-            case DUMP_PCAP_FILE:        return DumpMode.PCAP_FILE;
-            case DUMP_UDP_EXPORTER:     return DumpMode.UDP_EXPORTER;
-            default:                    return DumpMode.NONE;
-        }
+        return DumpMode.PCAP_FILE;
     }
 
     public static IpMode getIPMode(String pref) {

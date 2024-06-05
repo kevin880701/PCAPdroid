@@ -58,7 +58,6 @@ import com.emanuelef.remote_capture.activities.MainActivity;
 import com.emanuelef.remote_capture.interfaces.AppStateListener;
 import com.emanuelef.remote_capture.model.Prefs;
 import com.emanuelef.remote_capture.model.CaptureStats;
-import com.emanuelef.remote_capture.views.PrefSpinner;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -121,10 +120,6 @@ public class StatusFragment extends Fragment implements AppStateListener, MenuPr
         mFilterRootDecryptionWarning = view.findViewById(R.id.app_filter_root_decryption_warning);
         mPrefs = PreferenceManager.getDefaultSharedPreferences(mActivity);
         mAppFilter = Prefs.getAppFilter(mPrefs);
-
-        PrefSpinner.init(view.findViewById(R.id.dump_mode_spinner),
-                R.array.pcap_dump_modes, R.array.pcap_dump_modes_labels, R.array.pcap_dump_modes_descriptions,
-                Prefs.PREF_PCAP_DUMP_MODE, Prefs.DEFAULT_DUMP_MODE);
 
         mAppFilterSwitch = view.findViewById(R.id.app_filter_switch);
         View filterRow = view.findViewById(R.id.app_filter_text);

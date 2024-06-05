@@ -334,9 +334,7 @@ public class CaptureService extends VpnService implements Runnable {
         HAS_ERROR = false;
 
         // Possibly allocate the dumper
-        if(mSettings.dump_mode == Prefs.DumpMode.HTTP_SERVER)
-            mDumper = new HTTPServer(this, mSettings.http_server_port, mSettings.pcapng_format);
-        else if(mSettings.dump_mode == Prefs.DumpMode.PCAP_FILE) {
+        if(mSettings.dump_mode == Prefs.DumpMode.PCAP_FILE) {
             mPcapFname = !mSettings.pcap_name.isEmpty() ? mSettings.pcap_name : Utils.getUniquePcapFileName(this, mSettings.pcapng_format);
 
             if(!mSettings.pcap_uri.isEmpty())
@@ -348,18 +346,6 @@ public class CaptureService extends VpnService implements Runnable {
                 return abortStart();
 
             mDumper = new FileDumper(this, mPcapUri);
-        } else if(mSettings.dump_mode == Prefs.DumpMode.UDP_EXPORTER) {
-            InetAddress addr;
-
-            try {
-                addr = InetAddress.getByName(mSettings.collector_address);
-            } catch (UnknownHostException e) {
-                reportError(e.getLocalizedMessage());
-                e.printStackTrace();
-                return abortStart();
-            }
-
-            mDumper = new UDPDumper(new InetSocketAddress(addr, mSettings.collector_port), mSettings.pcapng_format);
         }
 
         if(mDumper != null) {
