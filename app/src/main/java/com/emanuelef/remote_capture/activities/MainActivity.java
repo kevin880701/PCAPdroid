@@ -242,29 +242,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void setupNavigationDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mDrawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.open_nav_drawer, R.string.close_nav_drawer);
-        mDrawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        mNavView = findViewById(R.id.nav_view);
-        mNavView.setNavigationItemSelectedListener(this);
-        View header = mNavView.getHeaderView(0);
-
-        TextView appVer = header.findViewById(R.id.app_version);
-        String verStr = Utils.getAppVersion(this);
-        appVer.setText(verStr);
-        appVer.setOnClickListener((ev) -> {
-            // e.g. it can be "1.5.2" or "1.5.2-2f2d3c8"
-            String ref = verStr;
-            int sep = ref.indexOf('-');
-            if(sep != -1)
-                ref = ref.substring(sep + 1);
-
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(GITHUB_PROJECT_URL + "/tree/" + ref));
-            Utils.startActivity(this, browserIntent);
-        });
     }
 
     private void showWhatsNew() {
@@ -684,9 +661,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             return true;
         } else if(id == R.id.action_stop) {
             stopCapture();
-            return true;
-        } else if(id == R.id.open_pcap) {
-            startOpenPcapFile();
             return true;
         } else if (id == R.id.action_settings) {
             Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
