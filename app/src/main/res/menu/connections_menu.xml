@@ -5,27 +5,59 @@
 
     <!-- NOTE: "always|collapseActionView" must be set to prevent the search button from
          disappearing and to avoid hiding the other elements. -->
-    <item
-        android:id="@+id/search"
-        android:title="@string/search"
-        android:icon="@drawable/ic_search"
-        android:orderInCategory="15"
-        app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView"
-        tools:ignore="AlwaysShowAction" />
 
     <item
-        android:id="@+id/edit_filter"
-        android:title="@string/edit_filter"
-        android:icon="@drawable/ic_filter"
+        android:id="@+id/action_start"
+        android:title="@string/start_button"
+        android:orderInCategory="10"
+        android:icon="@drawable/ic_play_arrow"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_stop"
+        android:title="@string/stop_button"
         android:orderInCategory="20"
-        app:showAsAction="always">
-    </item>
+        android:icon="@drawable/ic_media_stop"
+        android:visible="false"
+        app:showAsAction="always" />
+
+<!--    <item-->
+<!--        android:id="@+id/search"-->
+<!--        android:title="@string/search"-->
+<!--        android:icon="@drawable/ic_search"-->
+<!--        android:orderInCategory="15"-->
+<!--        app:actionViewClass="androidx.appcompat.widget.SearchView"-->
+<!--        app:showAsAction="always|collapseActionView"-->
+<!--        tools:ignore="AlwaysShowAction" />-->
+
+<!--    <item-->
+<!--        android:id="@+id/edit_filter"-->
+<!--        android:title="@string/edit_filter"-->
+<!--        android:icon="@drawable/ic_filter"-->
+<!--        android:orderInCategory="20"-->
+<!--        app:showAsAction="always">-->
+<!--    </item>-->
+
+<!--    <item-->
+<!--        android:id="@+id/save"-->
+<!--        android:title="@string/save_to_file"-->
+<!--        android:orderInCategory="30"-->
+<!--        android:icon="@drawable/ic_save"-->
+<!--        app:showAsAction="never" />-->
+
+
 
     <item
-        android:id="@+id/save"
-        android:title="@string/save_to_file"
-        android:orderInCategory="30"
-        android:icon="@drawable/ic_save"
-        app:showAsAction="never" />
+        android:id="@+id/action_files"
+        android:title="Files"
+        android:orderInCategory="40"
+        android:icon="@drawable/ic_files"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_apps"
+        android:title="@string/title_activity_settings"
+        android:orderInCategory="50"
+        android:icon="@drawable/apps"
+        app:showAsAction="always" />
 </menu>

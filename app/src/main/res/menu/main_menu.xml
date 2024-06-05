@@ -22,12 +22,19 @@
         android:title="@string/title_activity_settings"
         android:orderInCategory="30"
         android:icon="@drawable/ic_settings"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/action_files"
-        android:title="@string/title_activity_settings"
-        android:orderInCategory="30"
+        android:title="Files"
+        android:orderInCategory="40"
         android:icon="@drawable/ic_files"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_apps"
+        android:title="@string/title_activity_settings"
+        android:orderInCategory="50"
+        android:icon="@drawable/apps"
+        app:showAsAction="always" />
 </menu>

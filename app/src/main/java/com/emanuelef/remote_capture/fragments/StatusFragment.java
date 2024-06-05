@@ -69,6 +69,7 @@ public class StatusFragment extends Fragment implements AppStateListener, MenuPr
     private MenuItem mStopBtn;
     private ImageView mFilterIcon;
     private MenuItem mMenuSettings;
+    private MenuItem mMenuApps;
     private TextView mInterfaceInfo;
     private View mCollectorInfoLayout;
     private TextView mCollectorInfoText;
@@ -161,6 +162,7 @@ public class StatusFragment extends Fragment implements AppStateListener, MenuPr
         mStartBtn = mMenu.findItem(R.id.action_start);
         mStopBtn = mMenu.findItem(R.id.action_stop);
         mMenuSettings = mMenu.findItem(R.id.action_settings);
+        mMenuApps = mMenu.findItem(R.id.action_apps);
         refreshStatus();
     }
 
@@ -307,11 +309,13 @@ public class StatusFragment extends Fragment implements AppStateListener, MenuPr
                 mStopBtn.setEnabled(true);
                 mStopBtn.setVisible(!CaptureService.isAlwaysOnVPN());
                 mMenuSettings.setEnabled(false);
+                mMenuApps.setEnabled(false);
             } else { // ready || starting
                 mStopBtn.setVisible(false);
                 mStartBtn.setEnabled(true);
                 mStartBtn.setVisible(!CaptureService.isAlwaysOnVPN());
                 mMenuSettings.setEnabled(true);
+                mMenuApps.setEnabled(true);
             }
         }
 

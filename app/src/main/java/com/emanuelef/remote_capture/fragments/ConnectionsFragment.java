@@ -19,6 +19,7 @@
 
 package com.emanuelef.remote_capture.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -57,11 +58,15 @@ import com.emanuelef.remote_capture.Billing;
 import com.emanuelef.remote_capture.CaptureService;
 import com.emanuelef.remote_capture.ConnectionsRegister;
 import com.emanuelef.remote_capture.Log;
+import com.emanuelef.remote_capture.MitmReceiver;
 import com.emanuelef.remote_capture.PCAPdroid;
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.Utils;
 import com.emanuelef.remote_capture.activities.AppDetailsActivity;
+import com.emanuelef.remote_capture.activities.MainActivity;
+import com.emanuelef.remote_capture.interfaces.AppStateListener;
 import com.emanuelef.remote_capture.model.AppDescriptor;
+import com.emanuelef.remote_capture.model.AppState;
 import com.emanuelef.remote_capture.model.Blocklist;
 import com.emanuelef.remote_capture.model.ConnectionDescriptor;
 import com.emanuelef.remote_capture.activities.ConnectionDetailsActivity;
@@ -78,8 +83,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Set;
 
-public class ConnectionsFragment extends Fragment implements ConnectionsListener, MenuProvider, SearchView.OnQueryTextListener {
+public class ConnectionsFragment extends Fragment implements ConnectionsListener, MenuProvider,
+        SearchView.OnQueryTextListener, AppStateListener {
     private static final String TAG = "ConnectionsFragment";
     public static final String FILTER_EXTRA = "filter";
     public static final String QUERY_EXTRA = "query";
@@ -92,11 +99,17 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     private boolean autoScroll;
     private boolean listenerSet;
     private ChipGroup mActiveFilter;
+    private Menu mMenu;
+    private MenuItem mStartBtn;
+    private MainActivity mActivity;
+    private MenuItem mStopBtn;
     private MenuItem mMenuFilter;
     private MenuItem mMenuItemSearch;
     private MenuItem mSave;
+    private MenuItem mMenuApps;
     private Uri mCsvFname;
     private AppsResolver mApps;
+    private Set<String> mAppFilter;
     private SearchView mSearchView;
     private String mQueryToApply;
 
@@ -104,6 +117,20 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
             registerForActivityResult(new StartActivityForResult(), this::csvFileResult);
     private final ActivityResultLauncher<Intent> filterLauncher =
             registerForActivityResult(new StartActivityForResult(), this::filterResult);
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mActivity = (MainActivity) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mActivity.setAppStateListener(null);
+        mActivity = null;
+    }
 
     @Override
     public void onResume() {
@@ -115,6 +142,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         mRecyclerView.setEmptyView(mEmptyText); // after registerConnsListener, when the adapter is populated
 
         refreshMenuIcons();
+        refreshStatus();
     }
 
     @Override
@@ -173,6 +201,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mHandler = new Handler(Looper.getMainLooper());
@@ -277,6 +306,14 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
 
             refreshMenuIcons();
         });
+
+        // Register for updates
+//        MitmReceiver.observeStatus(this, status -> refreshDecryptionStatus());
+//        CaptureService.observeStats(this, this::onStatsUpdate);
+
+        /* Important: call this after all the fields have been initialized */
+        mActivity.setAppStateListener(this);
+        refreshStatus();
     }
 
     @Override
@@ -777,13 +814,17 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     @Override
     public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
         menuInflater.inflate(R.menu.connections_menu, menu);
-
-        mSave = menu.findItem(R.id.save);
-        mMenuFilter = menu.findItem(R.id.edit_filter);
+        mMenu = menu;
+//        mSave = menu.findItem(R.id.save);
+//        mMenuFilter = menu.findItem(R.id.edit_filter);
         mMenuItemSearch = menu.findItem(R.id.search);
 
-        mSearchView = (SearchView) mMenuItemSearch.getActionView();
-        mSearchView.setOnQueryTextListener(this);
+        mStartBtn = menu.findItem(R.id.action_start);
+        mStopBtn = menu.findItem(R.id.action_stop);
+        mMenuApps = menu.findItem(R.id.action_apps);
+
+//        mSearchView = (SearchView) mMenuItemSearch.getActionView();
+//        mSearchView.setOnQueryTextListener(this);
 
         if((mQueryToApply != null) && (!mQueryToApply.isEmpty())) {
             String query = mQueryToApply;
@@ -792,21 +833,22 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         }
 
         refreshMenuIcons();
+        refreshStatus();
     }
 
     @Override
     public boolean onMenuItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.save) {
-            openFileSelector();
-            return true;
-        } else if(id == R.id.edit_filter) {
-            Intent intent = new Intent(requireContext(), EditFilterActivity.class);
-            intent.putExtra(EditFilterActivity.FILTER_DESCRIPTOR, mAdapter.mFilter);
-            filterLauncher.launch(intent);
-            return true;
-        }
+//        if(id == R.id.save) {
+//            openFileSelector();
+//            return true;
+//        } else if(id == R.id.edit_filter) {
+//            Intent intent = new Intent(requireContext(), EditFilterActivity.class);
+//            intent.putExtra(EditFilterActivity.FILTER_DESCRIPTOR, mAdapter.mFilter);
+//            filterLauncher.launch(intent);
+//            return true;
+//        }
 
         return false;
     }
@@ -922,5 +964,47 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     // NOTE: dispatched from activity, returns true if handled
     public boolean onBackPressed() {
         return Utils.backHandleSearchview(mSearchView);
+    }
+
+
+    @Override
+    public void appStateChanged(AppState state) {
+        Context context = getContext();
+        Log.d("###########","" + (mMenu != null));
+        if(context == null)
+            return;
+
+        if(mMenu != null) {
+            if((state == AppState.running) || (state == AppState.stopping)) {
+                mStartBtn.setVisible(false);
+                mStopBtn.setEnabled(true);
+                mStopBtn.setVisible(!CaptureService.isAlwaysOnVPN());
+                mMenuApps.setEnabled(false);
+            } else { // ready || starting
+                mStopBtn.setVisible(false);
+                mStartBtn.setEnabled(true);
+                mStartBtn.setVisible(!CaptureService.isAlwaysOnVPN());
+                mMenuApps.setEnabled(true);
+            }
+        }
+
+        switch(state) {
+            case starting:
+                if(mMenu != null)
+                    mStartBtn.setEnabled(false);
+                break;
+            case stopping:
+                if(mMenu != null)
+                    mStopBtn.setEnabled(false);
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void refreshStatus() {
+        if(mActivity != null)
+            appStateChanged(mActivity.getState());
+//        recheckFilterWarning();
     }
 }
