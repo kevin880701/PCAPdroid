@@ -19,82 +19,52 @@
 
 package com.emanuelef.remote_capture.activities;
 
-import android.Manifest;
-import android.content.ActivityNotFoundException;
-import android.content.ClipData;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.os.Environment;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts.RequestPermission;
-import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.pm.PackageInfoCompat;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.emanuelef.remote_capture.AppsResolver;
-import com.emanuelef.remote_capture.Billing;
-import com.emanuelef.remote_capture.BuildConfig;
-import com.emanuelef.remote_capture.CaptureHelper;
-import com.emanuelef.remote_capture.CaptureService;
-import com.emanuelef.remote_capture.ConnectionsRegister;
-import com.emanuelef.remote_capture.Log;
-import com.emanuelef.remote_capture.MitmAddon;
-import com.emanuelef.remote_capture.MitmReceiver;
-import com.emanuelef.remote_capture.PCAPdroid;
 import com.emanuelef.remote_capture.R;
-import com.emanuelef.remote_capture.Utils;
-import com.emanuelef.remote_capture.VpnReconnectService;
-import com.emanuelef.remote_capture.activities.prefs.SettingsActivity;
-import com.emanuelef.remote_capture.fragments.ConnectionsFragment;
-import com.emanuelef.remote_capture.fragments.StatusFragment;
-import com.emanuelef.remote_capture.interfaces.AppStateListener;
-import com.emanuelef.remote_capture.model.AppDescriptor;
-import com.emanuelef.remote_capture.model.AppState;
-import com.emanuelef.remote_capture.model.CaptureSettings;
-import com.emanuelef.remote_capture.model.CaptureStats;
-import com.emanuelef.remote_capture.model.ListInfo;
-import com.emanuelef.remote_capture.model.Prefs;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
+import com.emanuelef.remote_capture.adapters.FilesAdapter;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashSet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FilesActivity extends BaseActivity {
+
+    private RecyclerView recyclerView;
+    private FilesAdapter adapter;
+    private List<File> foldersList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_activity);
+        setContentView(R.layout.activity_files);
         setTitle("PCAPdroid");
+
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        foldersList = new ArrayList<>();
+
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File pcapDroidDir = new File(downloadsDir, "PCAPdroid");
+        if (pcapDroidDir.exists() && pcapDroidDir.isDirectory()) {
+            File[] files = pcapDroidDir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) { // 只添加資料夾
+                        foldersList.add(file);
+                    }
+                }
+            }
+        }
+
+        adapter = new FilesAdapter(this, foldersList);
+        recyclerView.setAdapter(adapter);
 
     }
 
