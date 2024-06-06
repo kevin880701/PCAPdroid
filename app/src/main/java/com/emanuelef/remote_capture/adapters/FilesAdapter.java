@@ -20,12 +20,14 @@
 package com.emanuelef.remote_capture.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.activities.FileContentActivity;
 
 import java.io.File;
 import java.util.List;
@@ -34,10 +36,12 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.ViewHolder> 
 
     private List<File> mFiles;
     private LayoutInflater mInflater;
+    private Context mContext;
 
     public FilesAdapter(Context context, List<File> files) {
         this.mInflater = LayoutInflater.from(context);
         this.mFiles = files;
+        this.mContext = context;
     }
 
     @Override
@@ -50,6 +54,11 @@ public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         File file = mFiles.get(position);
         holder.fileName.setText(file.getName());
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, FileContentActivity.class);
+            intent.putExtra("filePath", file.getAbsolutePath());
+            mContext.startActivity(intent);
+        });
     }
 
     @Override

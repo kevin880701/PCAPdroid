@@ -115,6 +115,10 @@
         <activity
             android:name=".activities.FilesActivity"
             android:launchMode="singleTop"
+            android:parentActivityName=".activities.MainActivity" />
+        <activity
+            android:name=".activities.FileContentActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".activities.FilesActivity" />
 
         <service

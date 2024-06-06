@@ -56,7 +56,7 @@ public class FilesActivity extends BaseActivity {
             File[] files = pcapDroidDir.listFiles();
             if (files != null) {
                 for (File file : files) {
-                    if (file.isDirectory()) { // 只添加資料夾
+                    if (file.isDirectory()) {
                         foldersList.add(file);
                     }
                 }
