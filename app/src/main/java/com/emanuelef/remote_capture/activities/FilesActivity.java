@@ -51,7 +51,7 @@ public class FilesActivity extends BaseActivity {
         foldersList = new ArrayList<>();
 
         File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File pcapDroidDir = new File(downloadsDir, "PCAPdroid");
+        File pcapDroidDir = new File(downloadsDir, "PacketRecorder");
         if (pcapDroidDir.exists() && pcapDroidDir.isDirectory()) {
             File[] files = pcapDroidDir.listFiles();
             if (files != null) {
