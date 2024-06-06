@@ -1,8 +1,6 @@
 package com.emanuelef.remote_capture.activities;
 
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,7 +9,9 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import com.emanuelef.remote_capture.R;
-import com.emanuelef.remote_capture.fragments.RecorderFragment;
+import com.emanuelef.remote_capture.fragments.ConnectionsFragment;
+import com.emanuelef.remote_capture.fragments.FileConnectionsFragment;
+import com.emanuelef.remote_capture.fragments.FileVideoFragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -23,6 +23,7 @@ public class FileContentActivity extends BaseActivity {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
+    String filePath = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,8 +36,7 @@ public class FileContentActivity extends BaseActivity {
         viewPager = findViewById(R.id.view_pager);
 
 
-        String filePath = getIntent().getStringExtra("filePath");
-        Log.d("#####################","filePath:" + filePath);
+        filePath = getIntent().getStringExtra("filePath");
         if (filePath != null) {
             File file = new File(filePath);
             if (file.exists() && file.isDirectory()) {
@@ -66,17 +66,17 @@ public class FileContentActivity extends BaseActivity {
                     public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                         switch (position) {
                             case 0:
-                                tab.setText("Connection");
+                                tab.setText("Connections");
                                 break;
                             case 1:
-                                tab.setText("Recorder");
+                                tab.setText("Video");
                                 break;
                         }
                     }
                 }).attach();
     }
 
-    private static class ViewPagerAdapter extends FragmentStateAdapter {
+    private class ViewPagerAdapter extends FragmentStateAdapter {
 
         public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
             super(fragmentActivity);
@@ -87,11 +87,11 @@ public class FileContentActivity extends BaseActivity {
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
-                    return new RecorderFragment();
+                    return new FileVideoFragment("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 case 1:
-                    return new RecorderFragment();
+                    return new FileVideoFragment(filePath);
                 default:
-                    return new RecorderFragment();
+                    return new FileConnectionsFragment();
             }
         }
 
