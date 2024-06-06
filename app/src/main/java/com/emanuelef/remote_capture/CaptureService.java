@@ -338,17 +338,14 @@ public class CaptureService extends VpnService implements Runnable {
         HAS_ERROR = false;
 
         // Possibly allocate the dumper
+        /* TODO: 啟動時創建pcap檔案 */
         if(mSettings.dump_mode == Prefs.DumpMode.PCAP_FILE) {
-            Log.d("#######################", "###########################RR#######################");
-            Log.d("#######################", "mSettings.pcap_name：" + mSettings.pcap_name);
-            Log.d("#######################", "mSettings.pcap_name：" + Utils.getUniquePcapFileName(this, mSettings.pcapng_format));
-            Log.d("#######################", "###########################RR#######################");
             mPcapFname = !mSettings.pcap_name.isEmpty() ? mSettings.pcap_name : Utils.getUniquePcapFileName(this, mSettings.pcapng_format);
 
             if(!mSettings.pcap_uri.isEmpty())
                 mPcapUri = Uri.parse(mSettings.pcap_uri);
             else
-                mPcapUri = Utils.getDownloadsUri(this, mPcapFname);
+                mPcapUri = Utils.getDownloadsUri(this, mPcapFname, folderName);
 
             if(mPcapUri == null)
                 return abortStart();

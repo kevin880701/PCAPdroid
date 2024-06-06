@@ -827,7 +827,7 @@ public class Utils {
 
     // Get a URI to write a file into the downloads folder, into a folder named "PCAPdroid"
     // If the file exists, it's overwritten
-    public static Uri getDownloadsUri(Context context, String fname) {
+    public static Uri getDownloadsUri(Context context, String fname, String folderName) {
         ContentValues values = new ContentValues();
 
         //values.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
@@ -840,7 +840,7 @@ public class Utils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // On Android Q+ cannot directly access the external dir. Must use RELATIVE_PATH instead.
             // Important: trailing "/" required for the selectQuery
-            String relPath = Environment.DIRECTORY_DOWNLOADS + "/PCAPdroid/" + fmt.format(new Date()) + "/";
+            String relPath = Environment.DIRECTORY_DOWNLOADS + "/PCAPdroid/" + folderName + "/";
             selectQuery = MediaStore.MediaColumns.RELATIVE_PATH + "='" + relPath + "' AND " +
                 MediaStore.MediaColumns.DISPLAY_NAME + "='" + fname + "'";
             values.put(MediaStore.MediaColumns.RELATIVE_PATH, relPath);

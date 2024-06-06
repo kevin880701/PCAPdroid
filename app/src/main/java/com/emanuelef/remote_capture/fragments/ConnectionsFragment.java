@@ -866,7 +866,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
 
     public void dumpCsv() {
         String dump = mAdapter.dumpConnectionsCsv();
-        mCsvFname = Utils.getDownloadsUri(requireContext(), "mPcapFname");
+        mCsvFname = Utils.getDownloadsUri(requireContext(), "mPcapFname", CaptureService.folderName);
 
         if(mCsvFname != null) {
             Log.d(TAG, "Writing CSV file: " + mCsvFname);
@@ -921,7 +921,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
             Log.w(TAG, "No app found to handle file selection");
 
             // Pick default path
-            Uri uri = Utils.getDownloadsUri(requireContext(), fname);
+            Uri uri = Utils.getDownloadsUri(requireContext(), fname, CaptureService.folderName);
 
             if(uri != null) {
                 mCsvFname = uri;
