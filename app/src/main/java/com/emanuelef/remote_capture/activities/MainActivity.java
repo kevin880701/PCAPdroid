@@ -109,7 +109,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private boolean mStartPressed = false;
     private boolean mDecEmptyRulesNoticeShown = false;
     private boolean mTrailerNoticeShown = false;
-
+    public static ConnectionsFragment connectionsFragment = new ConnectionsFragment();
     private static final String TAG = "Main";
 
     private static final int POS_STATUS = 0;
@@ -409,7 +409,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //                case POS_STATUS:
 //                    return new StatusFragment();
                 case POS_CONNECTIONS:
-                    return new ConnectionsFragment();
+                    return connectionsFragment;
             }
         }
 
@@ -760,6 +760,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             return;
 
         CaptureStats stats = CaptureService.getStats();
+        connectionsFragment.dumpCsv();
+//         Utils.getDownloadsUri(this, "AA");
         Log.d(TAG, "Pcap dump size is " + stats.pcap_dump_size);
         Log.d("################","#################");
         Log.d("################","pcapUri：" + pcapUri);

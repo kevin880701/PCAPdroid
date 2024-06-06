@@ -335,6 +335,10 @@ public class CaptureService extends VpnService implements Runnable {
 
         // Possibly allocate the dumper
         if(mSettings.dump_mode == Prefs.DumpMode.PCAP_FILE) {
+            Log.d("#######################", "###########################RR#######################");
+            Log.d("#######################", "mSettings.pcap_name：" + mSettings.pcap_name);
+            Log.d("#######################", "mSettings.pcap_name：" + Utils.getUniquePcapFileName(this, mSettings.pcapng_format));
+            Log.d("#######################", "###########################RR#######################");
             mPcapFname = !mSettings.pcap_name.isEmpty() ? mSettings.pcap_name : Utils.getUniquePcapFileName(this, mSettings.pcapng_format);
 
             if(!mSettings.pcap_uri.isEmpty())

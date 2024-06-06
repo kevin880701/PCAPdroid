@@ -864,8 +864,9 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
         mSave.setEnabled(is_enabled);
     }
 
-    private void dumpCsv() {
+    public void dumpCsv() {
         String dump = mAdapter.dumpConnectionsCsv();
+        mCsvFname = Utils.getDownloadsUri(requireContext(), "mPcapFname");
 
         if(mCsvFname != null) {
             Log.d(TAG, "Writing CSV file: " + mCsvFname);
