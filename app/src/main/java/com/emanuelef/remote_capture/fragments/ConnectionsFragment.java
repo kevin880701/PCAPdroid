@@ -865,8 +865,53 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     }
 
     public void dumpCsv() {
-        String dump = mAdapter.dumpConnectionsCsv();
-        mCsvFname = Utils.getDownloadsUri(requireContext(), "mPcapFname", CaptureService.folderName);
+//        String dump = mAdapter.dumpConnectionsCsv();
+        StringBuilder builder = new StringBuilder();
+        AppsResolver resolver = new AppsResolver(requireContext());
+        boolean malwareDetection = Prefs.isMalwareDetectionEnabled(requireContext(), PreferenceManager.getDefaultSharedPreferences(requireContext()));
+
+        String header = getString(R.string.connections_csv_fields);
+        builder.append(header);
+        if(malwareDetection)
+            builder.append(",Malicious");
+        builder.append("\n");
+
+        // Contents
+        for(int i=0; i< mAdapter.getItemCount(); i++) {
+            ConnectionDescriptor conn = mAdapter.getItem(i);
+
+            if(conn != null) {
+                AppDescriptor app = resolver.getAppByUid(conn.uid, 0);
+
+                builder.append(conn.ipproto);                               builder.append(",");
+                builder.append(conn.src_ip);                                builder.append(",");
+                builder.append(conn.src_port);                              builder.append(",");
+                builder.append(conn.dst_ip);                                builder.append(",");
+                builder.append(conn.dst_port);                              builder.append(",");
+                builder.append(conn.uid);                                   builder.append(",");
+                builder.append((app != null) ? app.getName() : "");         builder.append(",");
+                builder.append(conn.l7proto);                               builder.append(",");
+                builder.append(conn.getStatusLabel(requireContext()));              builder.append(",");
+                builder.append((conn.info != null) ? conn.info : "");       builder.append(",");
+                builder.append(conn.sent_bytes);                            builder.append(",");
+                builder.append(conn.rcvd_bytes);                            builder.append(",");
+                builder.append(conn.sent_pkts);                             builder.append(",");
+                builder.append(conn.rcvd_pkts);                             builder.append(",");
+                builder.append(Utils.formatMillisIso8601(requireContext(), conn.first_seen));                            builder.append(",");
+                builder.append(Utils.formatMillisIso8601(requireContext(), conn.last_seen));
+
+                if(malwareDetection) {
+                    builder.append(",");
+
+                    if(conn.isBlacklisted())
+                        builder.append("yes");
+                }
+
+                builder.append("\n");
+            }
+        }
+        String dump = builder.toString();
+        mCsvFname = Utils.getDownloadsUri(requireContext(), "csvFile.csv", CaptureService.folderName);
 
         if(mCsvFname != null) {
             Log.d(TAG, "Writing CSV file: " + mCsvFname);
