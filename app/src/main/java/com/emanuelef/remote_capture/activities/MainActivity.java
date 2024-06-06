@@ -22,16 +22,20 @@ package com.emanuelef.remote_capture.activities;
 import static com.emanuelef.remote_capture.Utils.getPrimaryLocale;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.activity.result.contract.ActivityResultContracts.RequestPermission;
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
 import androidx.annotation.NonNull;
@@ -39,6 +43,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.PackageInfoCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -51,6 +57,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -66,10 +73,10 @@ import com.emanuelef.remote_capture.ConnectionsRegister;
 import com.emanuelef.remote_capture.Log;
 import com.emanuelef.remote_capture.MitmReceiver;
 import com.emanuelef.remote_capture.PCAPdroid;
+import com.emanuelef.remote_capture.ScreenRecordService;
 import com.emanuelef.remote_capture.VpnReconnectService;
 import com.emanuelef.remote_capture.activities.prefs.SettingsActivity;
 import com.emanuelef.remote_capture.fragments.ConnectionsFragment;
-import com.emanuelef.remote_capture.fragments.StatusFragment;
 import com.emanuelef.remote_capture.interfaces.AppStateListener;
 import com.emanuelef.remote_capture.model.AppDescriptor;
 import com.emanuelef.remote_capture.model.AppState;
@@ -77,7 +84,6 @@ import com.emanuelef.remote_capture.CaptureService;
 import com.emanuelef.remote_capture.model.CaptureSettings;
 import com.emanuelef.remote_capture.MitmAddon;
 import com.emanuelef.remote_capture.model.CaptureStats;
-import com.emanuelef.remote_capture.model.ConnectionDescriptor;
 import com.emanuelef.remote_capture.model.ListInfo;
 import com.emanuelef.remote_capture.model.Prefs;
 import com.emanuelef.remote_capture.R;
@@ -109,6 +115,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private NavigationView mNavView;
     private CaptureHelper mCapHelper;
     private AlertDialog mPcapLoadDialog;
+    private DisplayMetrics displayMetrics;
+    private ActivityResultLauncher<Intent> screenCaptureLauncher;
 
     // helps detecting duplicate state reporting of STOPPED in MutableLiveData
     private boolean mWasStarted = false;
@@ -116,6 +124,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private boolean mDecEmptyRulesNoticeShown = false;
     private boolean mTrailerNoticeShown = false;
     public static ConnectionsFragment connectionsFragment = new ConnectionsFragment();
+    private MediaProjectionManager mProjectionManager;
     private static final String TAG = "Main";
 
     private static final int POS_STATUS = 0;
@@ -151,6 +160,32 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.main_activity);
         setTitle("PCAPdroid");
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // 取得螢幕尺寸
+        displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+
+        // 初始化 screenCaptureLauncher
+        screenCaptureLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() != Activity.RESULT_OK) {
+                        Toast.makeText(this, "Screen Cast Permission Denied", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Intent data = result.getData();
+                    Intent serviceIntent = new Intent(this, ScreenRecordService.class);
+                    serviceIntent.putExtra("resultCode", result.getResultCode());
+                    serviceIntent.putExtra("data", data);
+                    serviceIntent.putExtra("screenWidth", displayMetrics.widthPixels);
+                    serviceIntent.putExtra("screenHeight", displayMetrics.heightPixels);
+                    serviceIntent.putExtra("screenDensity", displayMetrics.densityDpi);
+                    ContextCompat.startForegroundService(this, serviceIntent);
+                    startCapture();
+                }
+        );
 
         int appver = Prefs.getAppVersion(mPrefs);
         if (appver <= 0) {
@@ -295,6 +330,37 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void checkPermissions() {
+
+//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                // 需要的权限列表
+//                String[] permissions = {
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                        Manifest.permission.RECORD_AUDIO,
+//                        Manifest.permission.FOREGROUND_SERVICE,
+//                        Manifest.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION
+//                };
+//
+//                // 检查权限是否已经被授予
+//                ArrayList<String> permissionsToRequest = new ArrayList<>();
+//                for (String permission : permissions) {
+//                    if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+//                        permissionsToRequest.add(permission);
+//                    }
+//                }
+//
+//                // 请求未被授予的权限
+//                if (!permissionsToRequest.isEmpty()) {
+//                    try {
+//                        requestPermissionLauncher.launch(
+//                                Arrays.toString(permissionsToRequest.toArray(new String[0]))
+//                        );
+//                    } catch (ActivityNotFoundException e) {
+//                        Utils.showToastLong(this, R.string.no_intent_handler_found);
+//                    }
+//                }
+//            }
+//        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Needed to write PCAP files
@@ -321,12 +387,35 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     requestNotificationPermission();
             }
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                    AlertDialog dialog = new AlertDialog.Builder(this)
+                            .setMessage(R.string.audio_permission_notice)
+                            .setPositiveButton(R.string.ok, (d, whichButton) -> requestRecordPermission())
+                            .show();
+
+                    dialog.setCanceledOnTouchOutside(false);
+                } else
+                    requestRecordPermission();
+            }
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void requestNotificationPermission() {
         try {
             requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+        } catch (ActivityNotFoundException e) {
+            Utils.showToastLong(this, R.string.no_intent_handler_found);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestRecordPermission() {
+        try {
+            requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO);
         } catch (ActivityNotFoundException e) {
             Utils.showToastLong(this, R.string.no_intent_handler_found);
         }
@@ -672,9 +761,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         if (id == R.id.action_start) {
             mStartPressed = true;
-            startCapture();
+            startRecording();
             return true;
         } else if (id == R.id.action_stop) {
+            stopRecording();
             stopCapture();
             return true;
         } else if (id == R.id.action_settings) {
@@ -773,11 +863,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         CaptureStats stats = CaptureService.getStats();
         connectionsFragment.dumpCsv();
-//         Utils.getDownloadsUri(this, "AA");
-        Log.d(TAG, "Pcap dump size is " + stats.pcap_dump_size);
-        Log.d("################","#################");
-        Log.d("################","pcapUri：" + pcapUri);
-        Log.d("################","#################");
         if (stats.pcap_dump_size <= 0) {
             deletePcapFile(pcapUri); // empty file, delete
             return;
@@ -814,102 +899,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
-
-
-//    private void dumpCsv(Uri mCsvFname) {
-//
-//        StringBuilder builder = new StringBuilder();
-//        AppsResolver resolver = new AppsResolver(this);
-//        boolean malwareDetection = Prefs.isMalwareDetectionEnabled(this, PreferenceManager.getDefaultSharedPreferences(this));
-//
-//        String header = getString(R.string.connections_csv_fields);
-//        builder.append(header);
-//        if (malwareDetection)
-//            builder.append(",Malicious");
-//        builder.append("\n");
-//
-//        // Contents
-//        for (int i = 0; i < mFilteredConn.size(); i++) {
-//            ConnectionDescriptor conn = mFilteredConn.get(i);
-//
-//            if (conn != null) {
-//                AppDescriptor app = resolver.getAppByUid(conn.uid, 0);
-//
-//                builder.append(conn.ipproto);
-//                builder.append(",");
-//                builder.append(conn.src_ip);
-//                builder.append(",");
-//                builder.append(conn.src_port);
-//                builder.append(",");
-//                builder.append(conn.dst_ip);
-//                builder.append(",");
-//                builder.append(conn.dst_port);
-//                builder.append(",");
-//                builder.append(conn.uid);
-//                builder.append(",");
-//                builder.append((app != null) ? app.getName() : "");
-//                builder.append(",");
-//                builder.append(conn.l7proto);
-//                builder.append(",");
-//                builder.append(conn.getStatusLabel(this));
-//                builder.append(",");
-//                builder.append((conn.info != null) ? conn.info : "");
-//                builder.append(",");
-//                builder.append(conn.sent_bytes);
-//                builder.append(",");
-//                builder.append(conn.rcvd_bytes);
-//                builder.append(",");
-//                builder.append(conn.sent_pkts);
-//                builder.append(",");
-//                builder.append(conn.rcvd_pkts);
-//                builder.append(",");
-//                builder.append(Utils.formatMillisIso8601(this, conn.first_seen));
-//                builder.append(",");
-//                builder.append(Utils.formatMillisIso8601(this, conn.last_seen));
-//
-//                if (malwareDetection) {
-//                    builder.append(",");
-//
-//                    if (conn.isBlacklisted())
-//                        builder.append("yes");
-//                }
-//
-//                builder.append("\n");
-//            }
-//        }
-//
-//
-//        String dump = builder.toString();
-//
-//        Log.d(TAG, "Writing CSV file: " + mCsvFname);
-//        boolean error = true;
-//
-//        try {
-//            OutputStream stream = getContentResolver().openOutputStream(mCsvFname, "rwt");
-//
-//            if (stream != null) {
-//                stream.write(dump.getBytes());
-//                stream.close();
-//            }
-//
-//            Utils.UriStat stat = Utils.getUriStat(this, mCsvFname);
-//
-//            if (stat != null) {
-//                String msg = String.format(getString(R.string.file_saved_with_name), stat.name);
-//                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-//            } else
-//                Utils.showToast(this, R.string.save_ok);
-//
-//            error = false;
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        if (error)
-//            Utils.showToast(this, R.string.cannot_write_file);
-//
-//        mCsvFname = null;
-//    }
 
     private void deletePcapFile(Uri pcapUri) {
         boolean deleted = false;
@@ -1042,6 +1031,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 doStartCaptureService(path);
             }
         }
+    }
+
+    private void startRecording() {
+        if (mProjectionManager != null) {
+            Intent screenCaptureIntent = mProjectionManager.createScreenCaptureIntent();
+            screenCaptureLauncher.launch(screenCaptureIntent);
+        }
+    }
+
+    private void stopRecording() {
+        Intent serviceIntent = new Intent(this, ScreenRecordService.class);
+        stopService(serviceIntent);
     }
 
     private File getTmpPcapPath() {
