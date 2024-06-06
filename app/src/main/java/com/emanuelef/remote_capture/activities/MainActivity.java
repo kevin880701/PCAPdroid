@@ -57,6 +57,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -176,6 +177,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     Locale locale = getPrimaryLocale(this);
                     final DateFormat fmt = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", locale);
                     CaptureService.folderName = fmt.format(new Date());
+
+                    File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                    File targetDir = new File(downloadsDir, "PCAPdroid/" + CaptureService.folderName);
+
+                    if (!targetDir.exists()) {
+                        if (targetDir.mkdirs()) {
+                            // 目录创建成功
+                            System.out.println("Directory created: " + targetDir.getAbsolutePath());
+                        }
+                    }
 
                     if (result.getResultCode() != Activity.RESULT_OK) {
                         Toast.makeText(this, "Screen Cast Permission Denied", Toast.LENGTH_SHORT).show();

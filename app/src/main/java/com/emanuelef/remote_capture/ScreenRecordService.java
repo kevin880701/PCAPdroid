@@ -1,5 +1,7 @@
 package com.emanuelef.remote_capture;
 
+import static com.emanuelef.remote_capture.Utils.getPrimaryLocale;
+
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -12,13 +14,19 @@ import android.hardware.display.VirtualDisplay;
 import android.media.MediaRecorder;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
+import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class ScreenRecordService extends Service {
 
@@ -127,11 +135,13 @@ public class ScreenRecordService extends Service {
     }
 
     private void initRecorder() {
+
         mMediaRecorder = new MediaRecorder();
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mMediaRecorder.setOutputFile(getExternalFilesDir(null) + "/recorded_video.mp4");
+        mMediaRecorder.setOutputFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/PCAPdroid/" + CaptureService.folderName +
+                        "/recordedVideo.mp4");
         mMediaRecorder.setVideoSize(screenWidth, screenHeight);
         // 一定要偶數
 //        mMediaRecorder.setVideoSize(1080, 2200);
@@ -139,12 +149,6 @@ public class ScreenRecordService extends Service {
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mMediaRecorder.setVideoEncodingBitRate(512 * 1000);
         mMediaRecorder.setVideoFrameRate(30);
-
-        Log.d("@@@@@@@@@@@@@@@@@@@@@", "@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        Log.d("setOutputFile", "" + getExternalFilesDir(null) + "/recorded_video.mp4");
-        Log.d("screenWidth", "" + screenWidth);
-        Log.d("screenHeight", "" + screenHeight);
-        Log.d("@@@@@@@@@@@@@@@@@@@@@", "@@@@@@@@@@@@@@@@@@@@@@@@@@");
         try {
             mMediaRecorder.prepare();
         } catch (IOException e) {
