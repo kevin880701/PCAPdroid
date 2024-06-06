@@ -86,11 +86,14 @@ import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.locks.Condition;
@@ -175,6 +178,7 @@ public class CaptureService extends VpnService implements Runnable {
      * It must be in the same subnet of the VPN network interface.
      * After the analysis, requests will be routed to the primary DNS server. */
     public static final String VPN_VIRTUAL_DNS_SERVER = "10.215.173.2";
+    public static String folderName = "";
 
     public enum ServiceStatus {
         STOPPED,

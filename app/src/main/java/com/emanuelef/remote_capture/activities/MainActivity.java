@@ -19,6 +19,8 @@
 
 package com.emanuelef.remote_capture.activities;
 
+import static com.emanuelef.remote_capture.Utils.getPrimaryLocale;
+
 import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -88,7 +90,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -704,6 +710,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void doStartCaptureService(String input_pcap_path) {
+        // 啟動時創建當前時間資料夾用於保存檔案
+        Locale locale = getPrimaryLocale(this);
+        final DateFormat fmt = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", locale);
+        CaptureService.folderName = fmt.format(new Date());
+
         appStateStarting();
 
         CaptureSettings settings = new CaptureSettings(this, mPrefs);
@@ -732,8 +743,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     .setNegativeButton(R.string.cancel_action, (dialog, whichButton) -> {
                     })
                     .show();
-        } else
+        } else {
             doStartCaptureService(null);
+        }
     }
 
     public void stopCapture() {
