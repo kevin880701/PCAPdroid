@@ -33,7 +33,8 @@
         android:theme="@style/AppTheme"
         android:allowBackup="true"
         tools:replace="android:label"
-        tools:targetApi="m">
+        tools:targetApi="m"
+        android:banner="@mipmap/ic_launcher">
 
         <activity
             android:name=".activities.MainActivity"
@@ -44,6 +45,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
 
@@ -56,8 +58,6 @@
             android:name=".activities.prefs.EditCtrlPermissions"
             android:parentActivityName=".activities.prefs.SettingsActivity" />
 
-        <activity
-            android:name=".activities.OnBoardingActivity" />
         <activity
             android:name=".activities.ErrorActivity" />
         <activity
@@ -86,10 +86,6 @@
             android:name=".activities.prefs.PortMapActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".activities.prefs.SettingsActivity" />
-        <activity
-            android:name=".activities.AboutActivity"
-            android:launchMode="singleTop"
-            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.LogviewActivity"
             android:launchMode="singleTop"

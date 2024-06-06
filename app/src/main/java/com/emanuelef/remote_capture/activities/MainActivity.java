@@ -203,21 +203,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
         );
 
-        int appver = Prefs.getAppVersion(mPrefs);
-        if (appver <= 0) {
-            // First run, start on-boarding
-            // only refresh app version on on-boarding done
-            Intent intent = new Intent(MainActivity.this, OnBoardingActivity.class);
-            startActivity(intent);
-            finish();
-            return;
-        } else {
-            if (appver < 73)
-                showWhatsNew();
-
-            Prefs.refreshAppVersion(mPrefs);
-        }
-
         mIab = Billing.newInstance(this);
         mIab.setLicense(mIab.getLicense());
 
@@ -301,22 +286,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void setupNavigationDrawer() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-    }
-
-    private void showWhatsNew() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.whats_new)
-                .setMessage(
-                        "- Select multiple target apps\n" +
-                                "- Button to copy the connections payload\n" +
-                                "- Android 14 support\n" +
-                                "- Integrations to run with Tor and DNSCrypt\n" +
-                                "- mitmproxy 10.1.6 and Doze fix\n" +
-                                "- Use your own mitmproxy addons (experimental)\n"
-                )
-                .setNeutralButton(R.string.ok, (dialogInterface, i) -> {
-                })
-                .show();
     }
 
     // keep this in a separate function, used by play billing code
@@ -600,9 +569,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(intent);
             } else
                 Utils.showToast(this, R.string.start_capture_first);
-        } else if (id == R.id.action_about) {
-            Intent intent = new Intent(MainActivity.this, AboutActivity.class);
-            startActivity(intent);
         } else if (id == R.id.action_share_app) {
             String description = getString(R.string.about_text);
             String getApp = getString(R.string.get_app);
