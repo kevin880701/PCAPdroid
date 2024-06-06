@@ -5,12 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -21,10 +18,10 @@ import java.io.File;
 
 public class FileVideoFragment extends Fragment {
 
-    String filePath = "";
+    String folderPath = "";
 
-    public FileVideoFragment(String filePath) {
-        this.filePath = filePath;
+    public FileVideoFragment(String folderPath) {
+        this.folderPath = folderPath;
     }
 
     @Nullable
@@ -36,7 +33,7 @@ public class FileVideoFragment extends Fragment {
         TextView textView = view.findViewById(R.id.message_text_view);
 
 
-        String videoPath = filePath + "/recordedVideo.mp4";
+        String videoPath = folderPath + "/recordedVideo.mp4";
         File videoFile = new File(videoPath);
 
         if (videoFile.exists()) {

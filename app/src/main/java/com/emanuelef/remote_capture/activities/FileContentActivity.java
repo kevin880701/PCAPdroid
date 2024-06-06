@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import com.emanuelef.remote_capture.R;
-import com.emanuelef.remote_capture.fragments.ConnectionsFragment;
 import com.emanuelef.remote_capture.fragments.FileConnectionsFragment;
 import com.emanuelef.remote_capture.fragments.FileVideoFragment;
 import com.google.android.material.tabs.TabLayout;
@@ -23,7 +22,7 @@ public class FileContentActivity extends BaseActivity {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
-    String filePath = "";
+    String folderPath = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,9 +35,9 @@ public class FileContentActivity extends BaseActivity {
         viewPager = findViewById(R.id.view_pager);
 
 
-        filePath = getIntent().getStringExtra("filePath");
-        if (filePath != null) {
-            File file = new File(filePath);
+        folderPath = getIntent().getStringExtra("filePath");
+        if (folderPath != null) {
+            File file = new File(folderPath);
             if (file.exists() && file.isDirectory()) {
                 String folderName = file.getName();
                 setTitle(folderName);
@@ -87,11 +86,11 @@ public class FileContentActivity extends BaseActivity {
         public Fragment createFragment(int position) {
             switch (position) {
                 case 0:
-                    return new FileVideoFragment("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                    return new FileConnectionsFragment(folderPath);
                 case 1:
-                    return new FileVideoFragment(filePath);
+                    return new FileVideoFragment(folderPath);
                 default:
-                    return new FileConnectionsFragment();
+                    return new FileConnectionsFragment(folderPath);
             }
         }
 
