@@ -149,6 +149,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             registerForActivityResult(new RequestPermission(), isGranted ->
                     Log.d(TAG, "Write permission " + (isGranted ? "granted" : "denied"))
             );
+
+    private final ActivityResultLauncher<String[]> requestMultiplePermissionsLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
+                Boolean notificationsGranted = result.getOrDefault(Manifest.permission.POST_NOTIFICATIONS, false);
+                Boolean audioGranted = result.getOrDefault(Manifest.permission.RECORD_AUDIO, false);
+
+                Log.d(TAG, "Notification permission " + (notificationsGranted ? "granted" : "denied"));
+                Log.d(TAG, "Record audio permission " + (audioGranted ? "granted" : "denied"));
+            });
     private final ActivityResultLauncher<Intent> peerInfoLauncher =
             registerForActivityResult(new StartActivityForResult(), this::peerInfoResult);
     private final ActivityResultLauncher<Intent> pcapFileOpenLauncher =
@@ -328,32 +337,32 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             }
         }
 
+        // 要求通知和影音權限
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                    AlertDialog dialog = new AlertDialog.Builder(this)
-                            .setMessage(R.string.notifications_notice)
-                            .setPositiveButton(R.string.ok, (d, whichButton) -> requestNotificationPermission())
-                            .show();
+            boolean requestNotificationPermission = checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED;
+            boolean requestAudioPermission = checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED;
 
-                    dialog.setCanceledOnTouchOutside(false);
-                } else
-                    requestNotificationPermission();
+            if (requestNotificationPermission || requestAudioPermission) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) || shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                    new AlertDialog.Builder(this)
+                            .setMessage(R.string.notifications_notice + "\n" + getString(R.string.audio_permission_notice))
+                            .setPositiveButton(R.string.ok, (dialog, whichButton) -> requestPermissions())
+                            .show()
+                            .setCanceledOnTouchOutside(false);
+                } else {
+                    requestPermissions();
+                }
             }
         }
+    }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
-                    AlertDialog dialog = new AlertDialog.Builder(this)
-                            .setMessage(R.string.audio_permission_notice)
-                            .setPositiveButton(R.string.ok, (d, whichButton) -> requestRecordPermission())
-                            .show();
 
-                    dialog.setCanceledOnTouchOutside(false);
-                } else
-                    requestRecordPermission();
-            }
+    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
+    private void requestPermissions() {
+        try {
+            requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.RECORD_AUDIO});
+        } catch (ActivityNotFoundException e) {
+            Utils.showToastLong(this, R.string.no_intent_handler_found);
         }
     }
 
