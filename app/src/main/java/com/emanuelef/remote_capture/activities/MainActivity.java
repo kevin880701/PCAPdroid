@@ -171,6 +171,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         screenCaptureLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+
+                    // 啟動時創建當前時間資料夾用於保存檔案
+                    Locale locale = getPrimaryLocale(this);
+                    final DateFormat fmt = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", locale);
+                    CaptureService.folderName = fmt.format(new Date());
+
                     if (result.getResultCode() != Activity.RESULT_OK) {
                         Toast.makeText(this, "Screen Cast Permission Denied", Toast.LENGTH_SHORT).show();
                         return;
@@ -330,37 +336,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void checkPermissions() {
-
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                // 需要的权限列表
-//                String[] permissions = {
-//                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                        Manifest.permission.RECORD_AUDIO,
-//                        Manifest.permission.FOREGROUND_SERVICE,
-//                        Manifest.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION
-//                };
-//
-//                // 检查权限是否已经被授予
-//                ArrayList<String> permissionsToRequest = new ArrayList<>();
-//                for (String permission : permissions) {
-//                    if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
-//                        permissionsToRequest.add(permission);
-//                    }
-//                }
-//
-//                // 请求未被授予的权限
-//                if (!permissionsToRequest.isEmpty()) {
-//                    try {
-//                        requestPermissionLauncher.launch(
-//                                Arrays.toString(permissionsToRequest.toArray(new String[0]))
-//                        );
-//                    } catch (ActivityNotFoundException e) {
-//                        Utils.showToastLong(this, R.string.no_intent_handler_found);
-//                    }
-//                }
-//            }
-//        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Needed to write PCAP files
@@ -800,10 +775,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void doStartCaptureService(String input_pcap_path) {
-        // 啟動時創建當前時間資料夾用於保存檔案
-        Locale locale = getPrimaryLocale(this);
-        final DateFormat fmt = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", locale);
-        CaptureService.folderName = fmt.format(new Date());
 
         appStateStarting();
 
