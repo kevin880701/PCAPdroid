@@ -840,7 +840,7 @@ public class Utils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // On Android Q+ cannot directly access the external dir. Must use RELATIVE_PATH instead.
             // Important: trailing "/" required for the selectQuery
-            String relPath = Environment.DIRECTORY_DOWNLOADS + "/PCAPdroid/" + folderName + "/";
+            String relPath = Environment.DIRECTORY_DOWNLOADS + "/PacketRecorder/" + folderName + "/";
             selectQuery = MediaStore.MediaColumns.RELATIVE_PATH + "='" + relPath + "' AND " +
                 MediaStore.MediaColumns.DISPLAY_NAME + "='" + fname + "'";
             values.put(MediaStore.MediaColumns.RELATIVE_PATH, relPath);
@@ -854,7 +854,7 @@ public class Utils {
 
             // NOTE: context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) returns an app internal folder
             File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            File folder = new File(downloadsDir + "/PCAPdroid");
+            File folder = new File(downloadsDir + "/PacketRecorder");
             try {
                 folder.mkdirs();
             } catch (Exception ignored) {}

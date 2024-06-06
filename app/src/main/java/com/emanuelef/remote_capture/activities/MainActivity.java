@@ -159,7 +159,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-        setTitle("PCAPdroid");
+        setTitle("PacketRecorder");
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // 取得螢幕尺寸
@@ -179,11 +179,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     CaptureService.folderName = fmt.format(new Date());
 
                     File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                    File targetDir = new File(downloadsDir, "PCAPdroid/" + CaptureService.folderName);
+                    File targetDir = new File(downloadsDir, "PacketRecorder/" + CaptureService.folderName);
 
                     if (!targetDir.exists()) {
                         if (targetDir.mkdirs()) {
-                            // 目录创建成功
                             System.out.println("Directory created: " + targetDir.getAbsolutePath());
                         }
                     }

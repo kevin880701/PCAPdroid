@@ -140,7 +140,7 @@ public class ScreenRecordService extends Service {
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mMediaRecorder.setOutputFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/PCAPdroid/" + CaptureService.folderName +
+        mMediaRecorder.setOutputFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/PacketRecorder/" + CaptureService.folderName +
                         "/recordedVideo.mp4");
         mMediaRecorder.setVideoSize(screenWidth, screenHeight);
         // 一定要偶數
