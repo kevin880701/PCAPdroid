@@ -6,11 +6,13 @@
     android:layout_height="fill_parent"
     android:fillViewport="true"
     android:padding="8dp"
+    android:background="@color/bg_color"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/bg_color">
 
     <TableLayout
         android:id="@+id/table"
@@ -28,6 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:textStyle="bold"
+                android:textColor="@color/primary_black"
                 android:text="@string/app" />
             <TextView
                 android:id="@+id/detail_app"
@@ -35,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textIsSelectable="true"
+                android:textColor="@color/deep_gray"
                 tools:text="com.emanuelef.remote_capture (14503)" />
         </TableRow>
 
@@ -47,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:textStyle="bold"
+                android:textColor="@color/primary_black"
                 android:text="@string/protocol" />
             <TextView
                 android:id="@+id/detail_protocol"
@@ -54,6 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textIsSelectable="true"
+                android:textColor="@color/deep_gray"
                 tools:text="TLS (TCP)" />
         </TableRow>
 
@@ -67,6 +73,7 @@
                 android:layout_weight="0.25"
                 android:textIsSelectable="true"
                 android:textStyle="bold"
+                android:textColor="@color/primary_black"
                 android:text="@string/source" />
             <TextView
                 android:id="@+id/detail_source"
@@ -74,6 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textIsSelectable="true"
+                android:textColor="@color/deep_gray"
                 tools:text="1.2.3.4:14631" />
         </TableRow>
 
@@ -86,6 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:textStyle="bold"
+                android:textColor="@color/primary_black"
                 android:text="@string/destination" />
             <LinearLayout
                 android:layout_width="0dp"
@@ -98,6 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textIsSelectable="true"
+                    android:textColor="@color/deep_gray"
                     tools:text="5.6.7.8:443" />
             </LinearLayout>
         </TableRow>
@@ -112,6 +122,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:textStyle="bold"
+                android:textColor="@color/primary_black"
                 android:text="@string/network_traffic" />
             <TextView
                 android:id="@+id/detail_bytes"
@@ -119,6 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textIsSelectable="true"
+                android:textColor="@color/deep_gray"
                 tools:text="1.5 MB received - 0.1 sent" />
         </TableRow>
 
@@ -152,6 +164,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:textStyle="bold"
+                android:textColor="@color/primary_black"
                 android:text="@string/packets" />
             <TextView
                 android:id="@+id/detail_packets"
@@ -159,6 +172,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textIsSelectable="true"
+                android:textColor="@color/deep_gray"
                 tools:text="1.1 K received - 98 sent" />
         </TableRow>
 
@@ -171,6 +185,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:textStyle="bold"
+                android:textColor="@color/primary_black"
                 android:text="@string/first_seen" />
             <TextView
                 android:id="@+id/first_seen"
@@ -178,6 +193,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textIsSelectable="true"
+                android:textColor="@color/deep_gray"
                 tools:text="01/02/20 00:45:01" />
         </TableRow>
 
@@ -190,6 +206,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
                 android:textStyle="bold"
+                android:textColor="@color/primary_black"
                 android:text="@string/last_seen" />
             <TextView
                 android:id="@+id/last_seen"
@@ -197,6 +214,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75"
                 android:textIsSelectable="true"
+                android:textColor="@color/deep_gray"
                 tools:text="01/02/20 00:47:01" />
         </TableRow>
     </TableLayout>
