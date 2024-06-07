@@ -40,7 +40,7 @@
     </style>
 
     <style name="AppTheme.SplashScreen" parent="AppTheme.NoActionBar">
-        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:windowBackground">@color/primary_black</item>
     </style>
 
     <style name="MyActionBar" parent="@style/Widget.AppCompat.ActionBar.Solid">
