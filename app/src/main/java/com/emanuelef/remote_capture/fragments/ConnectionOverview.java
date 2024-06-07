@@ -52,7 +52,7 @@ import com.emanuelef.remote_capture.model.AppDescriptor;
 import com.emanuelef.remote_capture.model.ConnectionDescriptor;
 import com.haipq.android.flagkit.FlagImageView;
 
-public class ConnectionOverview extends Fragment implements ConnectionDetailsActivity.ConnUpdateListener, MenuProvider {
+public class ConnectionOverview extends Fragment implements ConnectionDetailsActivity.ConnUpdateListener {
     private static final String TAG = "ConnectionOverview";
     private ConnectionDetailsActivity mActivity;
     private ConnectionDescriptor mConn;
@@ -98,7 +98,6 @@ public class ConnectionOverview extends Fragment implements ConnectionDetailsAct
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        requireActivity().addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.connection_overview, container, false);
     }
 
@@ -224,30 +223,6 @@ public class ConnectionOverview extends Fragment implements ConnectionDetailsAct
 
             connectionUpdated();
         }
-    }
-
-    @Override
-    public void onCreateMenu(@NonNull Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.copy_share_menu, menu);
-    }
-
-    @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if(id == R.id.copy_to_clipboard) {
-            ClipboardManager clipboard = (ClipboardManager) mActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText(getString(R.string.connection_details), getContents());
-            clipboard.setPrimaryClip(clip);
-
-            Utils.showToast(mActivity, R.string.copied);
-            return true;
-        } else if(id == R.id.share) {
-            Utils.shareText(mActivity, getString(R.string.connection_details), getContents());
-            return true;
-        }
-
-        return false;
     }
 
     private String getContents() {
