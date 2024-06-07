@@ -19,6 +19,7 @@
 
 package com.emanuelef.remote_capture.fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,9 +33,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.recyclerview.widget.DividerItemDecoration;
 
 import com.emanuelef.remote_capture.AppsLoader;
 import com.emanuelef.remote_capture.Log;
@@ -70,9 +73,18 @@ public abstract class AppsToggles extends Fragment implements AppsLoadListener,
         EmptyRecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new EmptyRecyclerView.MyLinearLayoutManager(getContext()));
 
+        EmptyRecyclerView.MyLinearLayoutManager layoutMan = new EmptyRecyclerView.MyLinearLayoutManager(requireContext());
+
         mAdapter = new AppsTogglesAdapter(requireContext(), getCheckedApps());
         recyclerView.setAdapter(mAdapter);
         mAdapter.setAppToggleListener(this);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        Drawable customDivider = ContextCompat.getDrawable(requireContext(), R.drawable.custom_divider);
+        if (customDivider != null) {
+            dividerItemDecoration.setDrawable(customDivider);
+        }
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         mEmptyText = view.findViewById(R.id.no_apps);
         mEmptyText.setText(R.string.loading_apps);

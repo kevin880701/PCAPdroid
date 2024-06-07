@@ -61,7 +61,8 @@
             android:id="@+id/detail_info_row"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:visibility="gone">
             <TextView
                 android:id="@+id/detail_info_label"
                 android:layout_width="0dp"
@@ -154,6 +155,7 @@
                     app:drawableTint="@color/colorPrimary"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:textSize="12sp"
+                    android:visibility="gone"
                     android:text="@string/whois_lookup"/>
             </LinearLayout>
         </TableRow>
@@ -161,7 +163,8 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -182,8 +185,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="4dp"
-            android:visibility="gone"
-            tools:visibility="visible">
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -203,7 +205,8 @@
             android:id="@+id/detail_url_row"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -223,7 +226,8 @@
             android:id="@+id/country_row"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -256,7 +260,8 @@
             android:id="@+id/asn_row"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -275,7 +280,8 @@
             android:id="@+id/decryption_status_row"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -311,7 +317,8 @@
             android:id="@+id/injected_scripts_row"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -412,7 +419,8 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="4dp">
+            android:layout_marginBottom="4dp"
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

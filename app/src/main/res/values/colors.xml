@@ -26,4 +26,11 @@
     <color name="rcvdPayloadBg">#EDEDFB</color>
     <color name="rcvdPayloadFg">#00007F</color>
     <color name="lightGray">#aaa</color>
+
+    <color name="primary_black">#FF414141</color>
+    <color name="bg_color">#FFF6F6F6</color>
+    <color name="darker_gray">#FFAAAAAA</color>
+    <color name="border_grey">#FFEAEAEA</color>
+    <color name="disable_grey">#FFD2D2D2</color>
+    <color name="deep_gray">#FF999999</color>
 </resources>

@@ -49,6 +49,7 @@
                 android:singleLine="true"
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:textColor="@color/primary_black"
                 android:layout_height="wrap_content"
                 tools:text="Android" />
 
@@ -129,6 +130,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/app_name_layout"
             app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/deep_gray"
             tools:text="17:15:00"/>
 
         <ImageView
@@ -152,6 +154,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/app_name_layout"
             app:layout_constraintStart_toEndOf="@id/decryption_status"
+            android:textColor="@color/deep_gray"
             tools:text="HTTP, 80" />
 
         <LinearLayout
@@ -172,6 +175,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 tools:text="example.org"
+                android:textColor="@color/deep_gray"
                 android:textSize="12sp" />
         </LinearLayout>
 
@@ -182,6 +186,7 @@
             tools:text="105.4 MB"
             android:textSize="14sp"
             android:gravity="end"
+            android:textColor="@color/deep_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

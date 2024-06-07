@@ -19,9 +19,12 @@
 
 package com.emanuelef.remote_capture.activities;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,6 +50,14 @@ public class FilesActivity extends BaseActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        Drawable customDivider = ContextCompat.getDrawable(this, R.drawable.custom_divider);
+        if (customDivider != null) {
+            dividerItemDecoration.setDrawable(customDivider);
+        }
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         foldersList = new ArrayList<>();
 
