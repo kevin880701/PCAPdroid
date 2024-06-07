@@ -56,7 +56,7 @@ public class FileConnectionsFragment extends Fragment {
             recyclerView.setVisibility(View.GONE);
         } else {
             List<FileConnection> connections = readCsv(csvFile);
-            FileConnectionsAdapter adapter = new FileConnectionsAdapter(connections);
+            FileConnectionsAdapter adapter = new FileConnectionsAdapter(requireContext(), connections);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setAdapter(adapter);
             errorTextView.setVisibility(View.GONE);

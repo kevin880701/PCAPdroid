@@ -3,6 +3,8 @@ package com.emanuelef.remote_capture.adapters;
 import static com.emanuelef.remote_capture.activities.FileContentActivity.deviceAppInfoList;
 import static com.emanuelef.remote_capture.model.AppInfo.getIconByUid;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,14 +20,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.activities.FileConnectionDetailActivity;
 import com.emanuelef.remote_capture.model.AppDescriptor;
 import com.emanuelef.remote_capture.model.FileConnection;
 
 public class FileConnectionsAdapter extends RecyclerView.Adapter<FileConnectionsAdapter.ViewHolder> {
 
     private List<FileConnection> connections;
+    private Context context;
 
-    public FileConnectionsAdapter(List<FileConnection> connections) {
+    public FileConnectionsAdapter(Context context, List<FileConnection> connections) {
+        this.context = context;
         this.connections = connections;
     }
 
@@ -47,6 +52,12 @@ public class FileConnectionsAdapter extends RecyclerView.Adapter<FileConnections
         holder.dstIp.setText(connection.getDstIp());
         holder.lastSeen.setText(connection.getFormattedLastSeen());
         holder.totalBytes.setText(String.valueOf(connection.getTotalBytes()) + "B");
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, FileConnectionDetailActivity.class);
+            intent.putExtra("fileConnection", connection);
+            context.startActivity(intent);
+        });
     }
 
     @Override
