@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_vertical"
+        android:textColor="@color/primary_black"
         android:text="12:00 PM"
         android:textSize="16sp" />
 
@@ -19,5 +20,5 @@
         android:layout_width="24dp"
         android:layout_height="wrap_content"
         android:src="@drawable/right_arrow"
-        app:tint="@color/white" />
+        app:tint="@color/primary_black" />
 </LinearLayout>

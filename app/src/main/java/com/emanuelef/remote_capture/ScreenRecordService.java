@@ -142,9 +142,8 @@ public class ScreenRecordService extends Service {
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mMediaRecorder.setOutputFile(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/PacketRecorder/" + CaptureService.folderName +
                         "/recordedVideo.mp4");
-        mMediaRecorder.setVideoSize(screenWidth, screenHeight);
-        // 一定要偶數
-//        mMediaRecorder.setVideoSize(1080, 2200);
+        mMediaRecorder.setVideoSize((screenWidth % 2 == 0) ? screenWidth : screenWidth + 1, (screenHeight % 2 == 0) ?
+                screenHeight : screenHeight + 1);
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mMediaRecorder.setVideoEncodingBitRate(512 * 1000);

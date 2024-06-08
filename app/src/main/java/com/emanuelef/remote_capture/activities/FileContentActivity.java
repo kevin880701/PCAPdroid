@@ -1,5 +1,8 @@
 package com.emanuelef.remote_capture.activities;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,18 +14,23 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.fragments.FileConnectionsFragment;
 import com.emanuelef.remote_capture.fragments.FileVideoFragment;
+import com.emanuelef.remote_capture.model.AppInfo;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileContentActivity extends BaseActivity {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     String folderPath = "";
+
+    public static ArrayList<AppInfo> deviceAppInfoList = new ArrayList<AppInfo>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +41,7 @@ public class FileContentActivity extends BaseActivity {
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
+        getInstalledApps();
 
 
         folderPath = getIntent().getStringExtra("filePath");
@@ -98,5 +107,22 @@ public class FileContentActivity extends BaseActivity {
         public int getItemCount() {
             return 2;
         }
+    }
+
+
+
+    public void getInstalledApps() {
+        PackageManager packageManager = getPackageManager();
+        List<ApplicationInfo> packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA);
+        List<AppInfo> appList = new ArrayList<>();
+
+        for (ApplicationInfo appInfo : packages) {
+            String packageName = appInfo.packageName;
+            String appName = packageManager.getApplicationLabel(appInfo).toString();
+            Drawable appIcon = packageManager.getApplicationIcon(appInfo);
+            int appUid = appInfo.uid;
+            appList.add(new AppInfo(appName, packageName, appIcon, appUid));
+        }
+        deviceAppInfoList = (ArrayList<AppInfo>) appList;
     }
 }

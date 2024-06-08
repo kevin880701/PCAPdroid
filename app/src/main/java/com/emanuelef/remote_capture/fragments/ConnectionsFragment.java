@@ -25,6 +25,8 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,6 +48,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
@@ -103,6 +106,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
     private MenuItem mStartBtn;
     private MainActivity mActivity;
     private MenuItem mStopBtn;
+    private MenuItem mFilesBtn;
     private MenuItem mMenuFilter;
     private MenuItem mMenuItemSearch;
     private MenuItem mSave;
@@ -821,6 +825,7 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
 
         mStartBtn = menu.findItem(R.id.action_start);
         mStopBtn = menu.findItem(R.id.action_stop);
+        mFilesBtn = menu.findItem(R.id.action_files);
         mMenuApps = menu.findItem(R.id.action_apps);
 
 //        mSearchView = (SearchView) mMenuItemSearch.getActionView();
@@ -1024,12 +1029,40 @@ public class ConnectionsFragment extends Fragment implements ConnectionsListener
             if((state == AppState.running) || (state == AppState.stopping)) {
                 mStartBtn.setVisible(false);
                 mStopBtn.setEnabled(true);
-                mStopBtn.setVisible(!CaptureService.isAlwaysOnVPN());
+
+                Drawable filesIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_files);
+                if (filesIcon != null) {
+                    filesIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.disable_grey), PorterDuff.Mode.SRC_IN);
+                    mFilesBtn.setIcon(filesIcon);
+                }
+                mFilesBtn.setEnabled(false);
+
+                Drawable icon = ContextCompat.getDrawable(requireContext(), R.drawable.apps);
+                if (icon != null) {
+                    icon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.disable_grey), PorterDuff.Mode.SRC_IN);
+                    mMenuApps.setIcon(icon);
+                }
                 mMenuApps.setEnabled(false);
+
+                mStopBtn.setVisible(!CaptureService.isAlwaysOnVPN());
             } else { // ready || starting
                 mStopBtn.setVisible(false);
                 mStartBtn.setEnabled(true);
                 mStartBtn.setVisible(!CaptureService.isAlwaysOnVPN());
+
+
+                Drawable filesIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_files);
+                if (filesIcon != null) {
+                    filesIcon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white), PorterDuff.Mode.SRC_IN);
+                    mFilesBtn.setIcon(filesIcon);
+                }
+                mFilesBtn.setEnabled(true);
+
+                Drawable icon = ContextCompat.getDrawable(requireContext(), R.drawable.apps);
+                if (icon != null) {
+                    icon.setColorFilter(ContextCompat.getColor(requireContext(), R.color.white), PorterDuff.Mode.SRC_IN);
+                    mMenuApps.setIcon(icon);
+                }
                 mMenuApps.setEnabled(true);
             }
         }

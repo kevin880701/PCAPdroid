@@ -33,7 +33,7 @@ public class AppFilterActivity extends BaseActivity implements MenuProvider {
         super.onCreate(savedInstanceState);
         setTitle(R.string.target_apps);
         setContentView(R.layout.fragment_activity);
-        addMenuProvider(this);
+//        addMenuProvider(this);
         displayBackAction();
 
         if (savedInstanceState != null)
