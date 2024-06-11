@@ -255,40 +255,40 @@ public class ConnectionOverview extends Fragment implements ConnectionDetailsAct
         mBlacklistedIp.setVisibility(mConn.isBlacklistedIp() ? View.VISIBLE : View.GONE);
         mBlacklistedHost.setVisibility(mConn.isBlacklistedHost() ? View.VISIBLE : View.GONE);
 
-        if(mConn.decryption_error != null) {
-            mError.setTextColor(ContextCompat.getColor(context, R.color.danger));
-            mError.setText(mConn.decryption_error);
-            mError.setVisibility(View.VISIBLE);
-        } else if(mConn.is_blocked) {
-            mError.setTextColor(ContextCompat.getColor(context, R.color.warning));
-            mError.setText(context.getString(R.string.connection_blocked));
-            mError.setVisibility(View.VISIBLE);
-        } else if(!mConn.hasSeenStart()) {
-            mError.setTextColor(ContextCompat.getColor(context, R.color.warning));
-            mError.setText(context.getString(R.string.connection_start_not_seen));
-            mError.setVisibility(View.VISIBLE);
-        } else if(mConn.isPortMappingApplied()) {
-            mError.setTextColor(ContextCompat.getColor(context, R.color.colorTabText));
-            mError.setText(context.getString(R.string.connection_redirected_port_map));
-            mError.setVisibility(View.VISIBLE);
-        } else if(mConn.payload_length == 0) {
-            mError.setTextColor(ContextCompat.getColor(context, R.color.warning));
-            mError.setText(context.getString(R.string.warn_no_app_data));
-            mError.setVisibility(View.VISIBLE);
-        } else if(mConn.netd_block_missed) {
-            mError.setTextColor(ContextCompat.getColor(context, R.color.warning));
-            mError.setText(context.getString(R.string.netd_block_missed));
-            mError.setVisibility(View.VISIBLE);
-        } else if(mConn.getDecryptionStatus() == ConnectionDescriptor.DecryptionStatus.ENCRYPTED) {
-            mError.setTextColor(ContextCompat.getColor(context, R.color.colorTabText));
-            mError.setText(R.string.decryption_info_no_rule);
-            mError.setVisibility(View.VISIBLE);
-        } else if((mConn.getDecryptionStatus() == ConnectionDescriptor.DecryptionStatus.NOT_DECRYPTABLE)
-                && mConn.l7proto.equals("QUIC")) {
-            mError.setTextColor(ContextCompat.getColor(context, R.color.warning));
-            mError.setText(R.string.decrypt_quic_notice);
-            mError.setVisibility(View.VISIBLE);
-        } else
-            mError.setVisibility(View.GONE);
+//        if(mConn.decryption_error != null) {
+//            mError.setTextColor(ContextCompat.getColor(context, R.color.danger));
+//            mError.setText(mConn.decryption_error);
+//            mError.setVisibility(View.VISIBLE);
+//        } else if(mConn.is_blocked) {
+//            mError.setTextColor(ContextCompat.getColor(context, R.color.warning));
+//            mError.setText(context.getString(R.string.connection_blocked));
+//            mError.setVisibility(View.VISIBLE);
+//        } else if(!mConn.hasSeenStart()) {
+//            mError.setTextColor(ContextCompat.getColor(context, R.color.warning));
+//            mError.setText(context.getString(R.string.connection_start_not_seen));
+//            mError.setVisibility(View.VISIBLE);
+//        } else if(mConn.isPortMappingApplied()) {
+//            mError.setTextColor(ContextCompat.getColor(context, R.color.colorTabText));
+//            mError.setText(context.getString(R.string.connection_redirected_port_map));
+//            mError.setVisibility(View.VISIBLE);
+//        } else if(mConn.payload_length == 0) {
+//            mError.setTextColor(ContextCompat.getColor(context, R.color.warning));
+//            mError.setText(context.getString(R.string.warn_no_app_data));
+//            mError.setVisibility(View.VISIBLE);
+//        } else if(mConn.netd_block_missed) {
+//            mError.setTextColor(ContextCompat.getColor(context, R.color.warning));
+//            mError.setText(context.getString(R.string.netd_block_missed));
+//            mError.setVisibility(View.VISIBLE);
+//        } else if(mConn.getDecryptionStatus() == ConnectionDescriptor.DecryptionStatus.ENCRYPTED) {
+//            mError.setTextColor(ContextCompat.getColor(context, R.color.colorTabText));
+//            mError.setText(R.string.decryption_info_no_rule);
+//            mError.setVisibility(View.VISIBLE);
+//        } else if((mConn.getDecryptionStatus() == ConnectionDescriptor.DecryptionStatus.NOT_DECRYPTABLE)
+//                && mConn.l7proto.equals("QUIC")) {
+//            mError.setTextColor(ContextCompat.getColor(context, R.color.warning));
+//            mError.setText(R.string.decrypt_quic_notice);
+//            mError.setVisibility(View.VISIBLE);
+//        } else
+//            mError.setVisibility(View.GONE);
     }
 }
