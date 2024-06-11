@@ -32,8 +32,12 @@ import com.emanuelef.remote_capture.R;
 import com.emanuelef.remote_capture.adapters.FilesAdapter;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class FilesActivity extends BaseActivity {
 
@@ -66,9 +70,16 @@ public class FilesActivity extends BaseActivity {
         if (pcapDroidDir.exists() && pcapDroidDir.isDirectory()) {
             File[] files = pcapDroidDir.listFiles();
             if (files != null) {
+                String pattern = "\\d{4}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_\\d{2}";
                 for (File file : files) {
-                    if (file.isDirectory()) {
-                        foldersList.add(file);
+                    if (file.isDirectory() && file.getName().matches(pattern)) {
+                        File csvFile = new File(file, "csvFile.csv");
+                        File videoFile = new File(file, "recordedVideo.mp4");
+                        File pcapFile = new File(file, "pcapFile.pcap");
+
+                        if (csvFile.exists() && videoFile.exists() && pcapFile.exists()) {
+                            foldersList.add(file);
+                        }
                     }
                 }
             }
@@ -99,5 +110,21 @@ public class FilesActivity extends BaseActivity {
     public void onBackPressed() {
         finish();
         super.onBackPressed();
+    }
+
+    private boolean isValidFolder(File folder) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault());
+        try {
+            Date date = sdf.parse(folder.getName());
+        } catch (ParseException e) {
+            return false;
+        }
+
+        // 检查文件夹内容
+        File csvFile = new File(folder, "csvFile.csv");
+        File recordedVideo = new File(folder, "recordedVideo");
+        File pcapFile = new File(folder, "pcapFile.pcap");
+
+        return csvFile.exists() && recordedVideo.exists() && pcapFile.exists();
     }
 }
