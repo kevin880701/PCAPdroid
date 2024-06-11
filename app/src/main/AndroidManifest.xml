@@ -147,6 +147,16 @@
                 android:value="waits for the termination of the active VpnService"/>
         </service>
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <receiver android:name="com.emanuelef.remote_capture.ActionReceiver" />
 
         <receiver

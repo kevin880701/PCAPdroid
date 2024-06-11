@@ -3,17 +3,22 @@ package com.emanuelef.remote_capture.activities;
 import static com.emanuelef.remote_capture.pcap_dump.FileDumper.TAG;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -28,10 +33,14 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class FileContentActivity extends BaseActivity implements MenuProvider {
 
@@ -44,7 +53,7 @@ public class FileContentActivity extends BaseActivity implements MenuProvider {
     private MenuItem mDeleteBtn;
 
     public static ArrayList<AppInfo> deviceAppInfoList = new ArrayList<AppInfo>();
-
+    private ActivityResultLauncher<Intent> shareActivityResultLauncher;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +87,17 @@ public class FileContentActivity extends BaseActivity implements MenuProvider {
         } else {
             setTitle("no_file_specified");
         }
+
+        shareActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // 分享完成后删除 ZIP 文件
+                    File zipFile = new File(getCacheDir(), new File(folderPath).getName() + ".zip");
+                    if (zipFile.exists()) {
+                        zipFile.delete();
+                    }
+                }
+        );
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(viewPagerAdapter);
@@ -135,7 +155,26 @@ public class FileContentActivity extends BaseActivity implements MenuProvider {
                     .show();
             return true;
         } else if(id == R.id.share) {
-            Log.d("#################################","EEEEEEEEEEEEEEEE");
+            Log.d(TAG, "Share menu item clicked");
+
+            try {
+                File folder = new File(folderPath);
+                File zipFile = new File(getCacheDir(), folder.getName() + ".zip");
+                zipFolder(folder, zipFile);
+
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setType("application/zip");
+                Uri zipUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", zipFile);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, zipUri);
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                shareActivityResultLauncher.launch(Intent.createChooser(shareIntent, "Share ZIP"));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed to zip folder");
+            }
+
             return true;
         }
 
@@ -207,5 +246,43 @@ public class FileContentActivity extends BaseActivity implements MenuProvider {
             }
         }
         return folder.delete();
+    }
+
+    private void zipFolder(File folder, File zipFile) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(zipFile);
+             ZipOutputStream zos = new ZipOutputStream(fos)) {
+            zipFile(folder, folder.getName(), zos);
+        }
+    }
+
+    private void zipFile(File fileToZip, String fileName, ZipOutputStream zos) throws IOException {
+        if (fileToZip.isHidden()) {
+            return;
+        }
+        if (fileToZip.isDirectory()) {
+            if (fileName.endsWith("/")) {
+                zos.putNextEntry(new ZipEntry(fileName));
+                zos.closeEntry();
+            } else {
+                zos.putNextEntry(new ZipEntry(fileName + "/"));
+                zos.closeEntry();
+            }
+            File[] children = fileToZip.listFiles();
+            if (children != null) {
+                for (File childFile : children) {
+                    zipFile(childFile, fileName + "/" + childFile.getName(), zos);
+                }
+            }
+            return;
+        }
+        try (FileInputStream fis = new FileInputStream(fileToZip)) {
+            ZipEntry zipEntry = new ZipEntry(fileName);
+            zos.putNextEntry(zipEntry);
+            byte[] bytes = new byte[1024];
+            int length;
+            while ((length = fis.read(bytes)) >= 0) {
+                zos.write(bytes, 0, length);
+            }
+        }
     }
 }
