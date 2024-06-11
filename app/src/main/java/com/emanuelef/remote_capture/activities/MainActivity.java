@@ -146,9 +146,19 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(), result -> {
                 Boolean notificationsGranted = result.getOrDefault(Manifest.permission.POST_NOTIFICATIONS, false);
                 Boolean audioGranted = result.getOrDefault(Manifest.permission.RECORD_AUDIO, false);
+                Boolean writeGranted = result.getOrDefault(Manifest.permission.WRITE_EXTERNAL_STORAGE, false);
 
                 Log.d(TAG, "Notification permission " + (notificationsGranted ? "granted" : "denied"));
                 Log.d(TAG, "Record audio permission " + (audioGranted ? "granted" : "denied"));
+                Log.d(TAG, "writeGranted permission " + (writeGranted ? "granted" : "denied"));
+                if (!audioGranted || !writeGranted) {
+                    Log.d(TAG, "One or more permissions denied, finishing activity.");
+                    // 处理任意权限被拒绝的情况，结束活动
+                    finish();
+                } else {
+                    Log.d(TAG, "All permissions granted");
+                    // 所有权限都被授予的情况
+                }
             });
     private final ActivityResultLauncher<Intent> peerInfoLauncher =
             registerForActivityResult(new StartActivityForResult(), this::peerInfoResult);
@@ -316,26 +326,23 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void checkPermissions() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                // Needed to write PCAP files
-                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    try {
-                        requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                    } catch (ActivityNotFoundException e) {
-                        Utils.showToastLong(this, R.string.no_intent_handler_found);
-                    }
-                }
-            }
-        }
+//                // Needed to write PCAP files
+//                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                    try {
+//                        requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+//                    } catch (ActivityNotFoundException e) {
+//                        Utils.showToastLong(this, R.string.no_intent_handler_found);
+//                    }
+//                }
 
         // 要求通知和影音權限
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            boolean requestNotificationPermission = checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED;
+        boolean requestWritePermission =
+                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
+        boolean requestNotificationPermission = checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED;
             boolean requestAudioPermission = checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED;
 
-            if (requestNotificationPermission || requestAudioPermission) {
-                if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) || shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+            if (requestNotificationPermission || requestAudioPermission || requestWritePermission) {
+                if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) || shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO) || shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     new AlertDialog.Builder(this)
                             .setMessage(R.string.notifications_notice + "\n" + getString(R.string.audio_permission_notice))
                             .setPositiveButton(R.string.ok, (dialog, whichButton) -> requestPermissions())
@@ -345,14 +352,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     requestPermissions();
                 }
             }
-        }
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     private void requestPermissions() {
         try {
-            requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.RECORD_AUDIO});
+            requestMultiplePermissionsLauncher.launch(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.POST_NOTIFICATIONS, Manifest.permission.RECORD_AUDIO});
         } catch (ActivityNotFoundException e) {
             Utils.showToastLong(this, R.string.no_intent_handler_found);
         }
