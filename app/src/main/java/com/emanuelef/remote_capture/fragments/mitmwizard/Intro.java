@@ -34,7 +34,6 @@ public class Intro extends StepFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mStepIcon.setVisibility(View.GONE);
-        Utils.setTextUrls(mStepLabel, R.string.mitm_setup_wizard_intro, MainActivity.TLS_DECRYPTION_DOCS_URL);
 
         nextStep(R.id.navto_install_addon);
     }

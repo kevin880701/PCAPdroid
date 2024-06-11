@@ -109,8 +109,6 @@
     <string name="copy_to_clipboard">Copy</string>
     <string name="save_to_file">Save to file</string>
     <string name="older_connections_notice">%1$d older connections not shown</string>
-    <string name="about_text">PCAPdroid is an open source network capture and monitoring tool which works without root privileges</string>
-    <string name="get_app">Get it:</string>
     <string name="unknown_app">Unknown</string>
     <string name="phone_app">Phone</string>
     <string name="error">Error</string>

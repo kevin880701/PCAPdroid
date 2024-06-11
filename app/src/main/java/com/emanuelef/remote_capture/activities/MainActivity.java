@@ -134,14 +134,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     public static final String TELEGRAM_GROUP_NAME = "PCAPdroid";
     public static final String GITHUB_PROJECT_URL = "https://github.com/emanuele-f/PCAPdroid";
-    public static final String DOCS_URL = "https://emanuele-f.github.io/PCAPdroid";
-    public static final String PRIVACY_POLICY_URL = DOCS_URL + "/privacy";
-    public static final String DONATE_URL = "https://emanuele-f.github.io/PCAPdroid/donate";
-    public static final String TLS_DECRYPTION_DOCS_URL = DOCS_URL + "/tls_decryption";
-    public static final String PAID_FEATURES_URL = DOCS_URL + "/paid_features";
-    public static final String FIREWALL_DOCS_URL = PAID_FEATURES_URL + "#51-firewall";
-    public static final String MALWARE_DETECTION_DOCS_URL = PAID_FEATURES_URL + "#52-malware-detection";
-    public static final String PCAPNG_DOCS_URL = PAID_FEATURES_URL + "#53-pcapng-format";
 
     private final ActivityResultLauncher<Intent> sslkeyfileExportLauncher =
             registerForActivityResult(new StartActivityForResult(), this::sslkeyfileExportResult);
@@ -564,30 +556,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         } else if (id == R.id.open_log) {
             Intent intent = new Intent(MainActivity.this, LogviewActivity.class);
             startActivity(intent);
-        } else if (id == R.id.action_donate) {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(DONATE_URL));
-            Utils.startActivity(this, browserIntent);
-        } else if (id == R.id.action_open_telegram) {
-            openTelegram();
-        } else if (id == R.id.action_open_user_guide) {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(DOCS_URL));
-            Utils.startActivity(this, browserIntent);
         } else if (id == R.id.action_stats) {
             if (mState == AppState.running) {
                 Intent intent = new Intent(MainActivity.this, StatsActivity.class);
                 startActivity(intent);
             } else
                 Utils.showToast(this, R.string.start_capture_first);
-        } else if (id == R.id.action_share_app) {
-            String description = getString(R.string.about_text);
-            String getApp = getString(R.string.get_app);
-            String url = "https://play.google.com/store/apps/details?id=com.emanuelef.remote_capture";
-
-            Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            intent.putExtra(android.content.Intent.EXTRA_TEXT, description + "\n" + getApp + "\n" + url);
-
-            Utils.startActivity(this, Intent.createChooser(intent, getResources().getString(R.string.share)));
         }
 
         return false;
@@ -687,22 +661,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
             Prefs.setLockdownVpnNoticeShown(mPrefs);
         }
-    }
-
-    private void openTelegram() {
-        Intent intent;
-
-        try {
-            Utils.getPackageInfo(getPackageManager(), "org.telegram.messenger", 0);
-
-            // Open directly into the telegram app
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tg://resolve?domain=" + TELEGRAM_GROUP_NAME));
-        } catch (Exception e) {
-            // Telegram not found, open in the browser
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://t.me/" + TELEGRAM_GROUP_NAME));
-        }
-
-        Utils.startActivity(this, intent);
     }
 
     /*private void rateApp() {
