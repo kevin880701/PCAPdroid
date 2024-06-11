@@ -828,6 +828,10 @@ public class Utils {
     // Get a URI to write a file into the downloads folder, into a folder named "PCAPdroid"
     // If the file exists, it's overwritten
     public static Uri getDownloadsUri(Context context, String fname, String folderName) {
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@","@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@","fname：" + fname);
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@","folderName：" + folderName);
+        Log.d("@@@@@@@@@@@@@@@@@@@@@@@@@@@","@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
         ContentValues values = new ContentValues();
 
         //values.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
@@ -835,7 +839,6 @@ public class Utils {
         String selectQuery = "";
 
         Locale locale = getPrimaryLocale(context);
-        final DateFormat fmt = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", locale);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // On Android Q+ cannot directly access the external dir. Must use RELATIVE_PATH instead.
@@ -854,7 +857,7 @@ public class Utils {
 
             // NOTE: context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) returns an app internal folder
             File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            File folder = new File(downloadsDir + "/PacketRecorder");
+            File folder = new File(downloadsDir + "/PacketRecorder/" + folderName + "/");
             try {
                 folder.mkdirs();
             } catch (Exception ignored) {}
