@@ -181,16 +181,6 @@ public class FileContentActivity extends BaseActivity implements MenuProvider {
         return false;
     }
 
-    @Override
-    public void onMenuClosed(@NonNull Menu menu) {
-        MenuProvider.super.onMenuClosed(menu);
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-        super.onPointerCaptureChanged(hasCapture);
-    }
-
     private class ViewPagerAdapter extends FragmentStateAdapter {
 
         public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
