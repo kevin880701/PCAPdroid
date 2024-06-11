@@ -103,6 +103,30 @@ public class FilesActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        foldersList = new ArrayList<>();
+
+        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File pcapDroidDir = new File(downloadsDir, "PacketRecorder");
+        if (pcapDroidDir.exists() && pcapDroidDir.isDirectory()) {
+            File[] files = pcapDroidDir.listFiles();
+            if (files != null) {
+                String pattern = "\\d{4}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_\\d{2}";
+                for (File file : files) {
+                    if (file.isDirectory() && file.getName().matches(pattern)) {
+                        File csvFile = new File(file, "csvFile.csv");
+                        File videoFile = new File(file, "recordedVideo.mp4");
+                        File pcapFile = new File(file, "pcapFile.pcap");
+
+                        if (csvFile.exists() && videoFile.exists() && pcapFile.exists()) {
+                            foldersList.add(file);
+                        }
+                    }
+                }
+            }
+        }
+
+        adapter = new FilesAdapter(this, foldersList);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override

@@ -1,17 +1,26 @@
 package com.emanuelef.remote_capture.activities;
 
+import static com.emanuelef.remote_capture.pcap_dump.FileDumper.TAG;
+
+import android.app.AlertDialog;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 import com.emanuelef.remote_capture.R;
+import com.emanuelef.remote_capture.Utils;
 import com.emanuelef.remote_capture.fragments.FileConnectionsFragment;
 import com.emanuelef.remote_capture.fragments.FileVideoFragment;
 import com.emanuelef.remote_capture.model.AppInfo;
@@ -24,11 +33,15 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileContentActivity extends BaseActivity {
+public class FileContentActivity extends BaseActivity implements MenuProvider {
 
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     String folderPath = "";
+
+    private Menu mMenu;
+    private MenuItem mShareBtn;
+    private MenuItem mDeleteBtn;
 
     public static ArrayList<AppInfo> deviceAppInfoList = new ArrayList<AppInfo>();
 
@@ -38,6 +51,7 @@ public class FileContentActivity extends BaseActivity {
         setContentView(R.layout.activity_file_content);
         setTitle("File Content");
         displayBackAction();
+        addMenuProvider(this);
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
@@ -84,6 +98,60 @@ public class FileContentActivity extends BaseActivity {
                 }).attach();
     }
 
+    @Override
+    public void onPrepareMenu(@NonNull Menu menu) {
+        MenuProvider.super.onPrepareMenu(menu);
+    }
+
+    @Override
+    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+        menuInflater.inflate(R.menu.file_content_menu, menu);
+
+        mMenu = menu;
+
+        mShareBtn = menu.findItem(R.id.share);
+        mDeleteBtn = menu.findItem(R.id.delete);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.delete) {
+            Log.d(TAG, "Delete menu item clicked");
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete Folder")
+                    .setMessage("Are you sure you want to delete this folder?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        File folder = new File(folderPath);
+                        if (deleteFolder(folder)) {
+                            Log.d(TAG, "Folder deleted successfully");
+                            finish();
+                        } else {
+                            Log.d(TAG, "Failed to delete folder");
+                        }
+                    })
+                    .setNegativeButton("No", null)
+                    .show();
+            return true;
+        } else if(id == R.id.share) {
+            Log.d("#################################","EEEEEEEEEEEEEEEE");
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onMenuClosed(@NonNull Menu menu) {
+        MenuProvider.super.onMenuClosed(menu);
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
+
     private class ViewPagerAdapter extends FragmentStateAdapter {
 
         public ViewPagerAdapter(@NonNull FragmentActivity fragmentActivity) {
@@ -124,5 +192,20 @@ public class FileContentActivity extends BaseActivity {
             appList.add(new AppInfo(appName, packageName, appIcon, appUid));
         }
         deviceAppInfoList = (ArrayList<AppInfo>) appList;
+    }
+
+
+    private boolean deleteFolder(File folder) {
+        if (folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (!deleteFolder(file)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return folder.delete();
     }
 }
