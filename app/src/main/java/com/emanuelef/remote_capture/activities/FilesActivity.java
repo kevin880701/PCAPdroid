@@ -100,9 +100,8 @@ public class FilesActivity extends BaseActivity implements MenuProvider {
                     if (file.isDirectory() && file.getName().matches(pattern)) {
                         File csvFile = new File(file, "csvFile.csv");
                         File videoFile = new File(file, "recordedVideo.mp4");
-                        File pcapFile = new File(file, "pcapFile.pcap");
 
-                        if (csvFile.exists() && videoFile.exists() && pcapFile.exists()) {
+                        if (csvFile.exists() && videoFile.exists()) {
                             foldersList.add(file);
                         }
                     }
@@ -312,9 +311,8 @@ public class FilesActivity extends BaseActivity implements MenuProvider {
                     if (file.isDirectory() && file.getName().matches(pattern)) {
                         File csvFile = new File(file, "csvFile.csv");
                         File videoFile = new File(file, "recordedVideo.mp4");
-                        File pcapFile = new File(file, "pcapFile.pcap");
 
-                        if (csvFile.exists() && videoFile.exists() && pcapFile.exists()) {
+                        if (csvFile.exists() && videoFile.exists()) {
                             foldersList.add(file);
                         }
                     }

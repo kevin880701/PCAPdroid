@@ -8,8 +8,8 @@ android {
         minSdkVersion 26
         compileSdk 34
         targetSdk 34
-        versionCode 75
-        versionName "1.7.2"
+        versionCode 1
+        versionName "1.0.0"
 
         buildConfigField "long", "BUILD_TIME", System.currentTimeMillis() + "L"
     }
@@ -21,7 +21,6 @@ android {
         debug {
             // Use a different app ID for debug to allow its coexistence with release builds
             applicationIdSuffix '.debug'
-            versionNameSuffix '-beta'
             pseudoLocalesEnabled true
 
             if(project.hasProperty("doNotStrip")) {

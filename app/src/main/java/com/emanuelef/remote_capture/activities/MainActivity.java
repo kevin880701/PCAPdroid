@@ -151,13 +151,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 Log.d(TAG, "Notification permission " + (notificationsGranted ? "granted" : "denied"));
                 Log.d(TAG, "Record audio permission " + (audioGranted ? "granted" : "denied"));
                 Log.d(TAG, "writeGranted permission " + (writeGranted ? "granted" : "denied"));
-                if (!audioGranted || !writeGranted) {
+                if (!audioGranted) {
+//                    if (!audioGranted || !notificationsGranted) {
                     Log.d(TAG, "One or more permissions denied, finishing activity.");
-                    // 处理任意权限被拒绝的情况，结束活动
                     finish();
                 } else {
                     Log.d(TAG, "All permissions granted");
-                    // 所有权限都被授予的情况
                 }
             });
     private final ActivityResultLauncher<Intent> peerInfoLauncher =
