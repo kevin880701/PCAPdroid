@@ -656,7 +656,7 @@ public class CaptureService extends VpnService implements Runnable {
                 new Intent(this, MainActivity.class), Utils.getIntentFlags(PendingIntent.FLAG_UPDATE_CURRENT));
         mStatusBuilder = new NotificationCompat.Builder(this, NOTIFY_CHAN_VPNSERVICE)
                 .setSmallIcon(R.drawable.ic_logo)
-                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                .setColor(ContextCompat.getColor(this, R.color.primary_black))
                 .setContentIntent(pi)
                 .setOngoing(true)
                 .setAutoCancel(false)
