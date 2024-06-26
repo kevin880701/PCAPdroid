@@ -4,7 +4,7 @@ android {
     ndkVersion "26.1.10909125"
 
     defaultConfig {
-        applicationId "com.emanuelef.remote_capture"
+        applicationId "com.lhr.packet_recorder"
         minSdkVersion 26
         compileSdk 34
         targetSdk 34
@@ -14,15 +14,31 @@ android {
         buildConfigField "long", "BUILD_TIME", System.currentTimeMillis() + "L"
     }
 
+    signingConfigs {
+        release {
+            storeFile file('../lhrkey.jks')
+            storePassword 'W@lf6875'
+            keyAlias 'key0'
+            keyPassword 'W@lf6875'
+        }
+
+        debug {
+            storeFile file('../lhrkey.jks')
+            storePassword 'W@lf6875'
+            keyAlias 'key0'
+            keyPassword 'W@lf6875'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
         }
         debug {
             // Use a different app ID for debug to allow its coexistence with release builds
-            applicationIdSuffix '.debug'
             pseudoLocalesEnabled true
-
+            signingConfig signingConfigs.release
             if(project.hasProperty("doNotStrip")) {
                 // NOTE: packagingOptions will also affect the "release" build, so the "doNotStrip"
                 // guard is required
@@ -34,6 +50,13 @@ android {
                 }
             }
         }
+//        applicationVariants.all { variant ->
+//            variant.outputs
+//                    .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
+//                    .forEach { output ->
+//                        output.outputFileName = "PacketRecorder_${variant.baseName}_${variant.versionName}+${variant.versionCode}.apk"
+//                    }
+//        }
     }
 
     packagingOptions {
@@ -95,4 +118,10 @@ dependencies {
     implementation 'com.github.androidmads:QRGenerator:1.0.1'
 
     implementation 'com.opencsv:opencsv:5.5.2'
+}
+android.applicationVariants.all {
+    variant ->
+        variant.outputs.all { output ->
+            output.outputFileName = "PacketRecorder_${variant.baseName}_${variant.versionName}+${variant.versionCode}.apk"
+        }
 }
