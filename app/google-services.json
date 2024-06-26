@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "546123415001",
+    "project_id": "packetrecorder-744a6",
+    "storage_bucket": "packetrecorder-744a6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:546123415001:android:331eb59907e0506381adc8",
+        "android_client_info": {
+          "package_name": "com.lhr.packet_recorder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsyIrT_8Xlf1lfA5D3b3SoxwBSP6nYBqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

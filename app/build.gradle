@@ -1,5 +1,10 @@
-apply plugin: 'com.android.application'
-
+plugins {
+    id("com.android.application")
+    // Add the Google services Gradle plugin
+    id 'com.google.gms.google-services'
+    // Add the Crashlytics Gradle plugin
+    id 'com.google.firebase.crashlytics'
+}
 android {
     ndkVersion "26.1.10909125"
 
@@ -118,6 +123,12 @@ dependencies {
     implementation 'com.github.androidmads:QRGenerator:1.0.1'
 
     implementation 'com.opencsv:opencsv:5.5.2'
+
+    // FireBase
+    implementation platform('com.google.firebase:firebase-bom:33.1.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 }
 android.applicationVariants.all {
     variant ->
