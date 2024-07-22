@@ -125,7 +125,7 @@ public class ScreenRecordService extends Service {
         mMediaRecorder.stop();
         mMediaRecorder.reset();
         mVirtualDisplay.release();
-        mMediaProjection.stop();
+//        mMediaProjection.stop();
     }
 
     @Nullable

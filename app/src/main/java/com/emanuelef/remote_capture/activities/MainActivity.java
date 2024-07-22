@@ -256,7 +256,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                 if ((Prefs.getDumpMode(mPrefs) == Prefs.DumpMode.PCAP_FILE)) {
                     showPcapActionDialog();
-
+//                    Toast.makeText(this,"已儲存紀錄",Toast.LENGTH_SHORT);
                     // will export the keylogfile after saving/sharing pcap
                 } else if (mKeylogFile != null)
                     startExportSslkeylogfile();
@@ -796,20 +796,20 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             pcapName = "unknown";
 
         String message = String.format(getResources().getString(R.string.pcap_file_action), pcapName, Utils.formatBytes(stats.pcap_dump_size));
-
+        message = "已儲存紀錄";
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage(message);
 
-        builder.setPositiveButton(R.string.share, (dialog, which) -> {
-            Intent sendIntent = new Intent(Intent.ACTION_SEND);
-            sendIntent.setType("application/cap");
-            sendIntent.putExtra(Intent.EXTRA_STREAM, pcapUri);
-            sendIntent.setClipData(ClipData.newRawUri("", pcapUri));
-            sendIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            Utils.startActivity(this, Intent.createChooser(sendIntent, getResources().getString(R.string.share)));
-        });
-        builder.setNegativeButton(R.string.delete, (dialog, which) -> deletePcapFile(pcapUri));
+//        builder.setPositiveButton(R.string.share, (dialog, which) -> {
+//            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+//            sendIntent.setType("application/cap");
+//            sendIntent.putExtra(Intent.EXTRA_STREAM, pcapUri);
+//            sendIntent.setClipData(ClipData.newRawUri("", pcapUri));
+//            sendIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//            Utils.startActivity(this, Intent.createChooser(sendIntent, getResources().getString(R.string.share)));
+//        });
+//        builder.setNegativeButton(R.string.delete, (dialog, which) -> deletePcapFile(pcapUri));
         builder.setNeutralButton(R.string.ok, (dialog, which) -> {
         });
         builder.setOnDismissListener(dialogInterface -> {
