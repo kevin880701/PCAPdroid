@@ -173,8 +173,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         // 取得螢幕尺寸
+        
+        WindowManager windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+        //displayMetrics = new DisplayMetrics();
+        //getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
         mProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
